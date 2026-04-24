@@ -94,36 +94,33 @@ Write the external sensor value back to your TRVs to fix their internal temperat
 
 Controls what happens when a member device is changed directly (e.g. via its own app or physical buttons) — not when you control the group itself.
 
-The behavior of each mode depends on whether the changed attribute is listed under **Synced Attributes** in the UI — or not. Think of the two columns as two independent policies the mode applies:
 
-| Mode | Attribute **in** `sync_attributes` | Attribute **not in** `sync_attributes` |
-|---|---|---|
-| **Disabled** | Ignore | Ignore |
-| **Mirror** | Mirror ¹ | Ignore |
-| **Lock** | Revert ¹ | Ignore |
-| **Mirror/Lock** | Mirror ¹ | Revert ¹ |
-| **Master/Lock** | Master: Mirror · Non-master: Revert ¹ | Ignore |
+* **Sync Modes**
 
-*¹ With **Respect Member Off State (Sync)** enabled: members that are manually turned `off` are left alone — their `off` is neither mirrored nor reverted. Exception: if it is the last active member, the group itself switches to `off`.*
+  The behavior of each mode depends on whether the changed attribute under **Sync Attributes** is selected or not. Think of the two columns as two independent policies the mode applies:
 
-**Glossary**
-- **Mirror** — the group adopts the member's new value as the new group target, then syncs all other members to match.
-- **Revert** — the group ignores the member's change and immediately sends the current group target back to that member.
-- **Ignore** — the group takes no action; the member keeps its locally changed value.
+  | Sync Mode | Attribute selected | Attribute not selected |
+  |---|---|---|
+  | **Disabled** | Ignore | Ignore |
+  | **Mirror** | Mirror ¹ | Ignore |
+  | **Lock** | Revert ¹ | Ignore |
+  | **Mirror/Lock** | Mirror ¹ | Revert ¹ |
+  | **Master/Lock** | Master: Mirror · Non-master: Revert ¹ | Ignore |
 
-**Synced Attributes** therefore has a different meaning depending on the mode:
+  - *¹ With **Respect Member Off State (Sync)** enabled: members that are manually turned `off` are left alone and their `off` is neither mirrored nor reverted.*
 
-| Mode | Role of **Synced Attributes** |
-|---|---|
-| Mirror | Opt-in: only listed attributes are mirrored. Unlisted = local freedom. |
-| Lock | Opt-in: only listed attributes are enforced. Unlisted = local freedom. |
-| **Mirror/Lock** | **Split**: listed = mirrored, unlisted = locked (no attribute is ignored). |
-| Master/Lock | Opt-in for the master: only listed attributes are adopted from the master. |
+* **Sync Attributes**
 
-> [!NOTE]
-> **Mirror/Lock** is the only mode where no attribute is left alone — every change on a member either updates the group or gets corrected. Use it e.g. to allow users to adjust the temperature from any thermostat while preventing them from switching modes or fan speeds.
+  With Sync Attributes, you can select specific attributes, like `hvac_mode`, `temperature`, `preset_mode` to be included for syncing. The meaning of the selected or unselected attributes depends on the **Sync mode**:
 
-*   **Respect Member Off State (Sync):** When a member is manually turned `off`, the group neither mirrors that `off` to others nor forces it back on — the member is simply left alone. The one exception: if it is the *last* active member, the group accepts the `off` and its own target switches to `off` as well.
+  | Mode | Role of **Sync Attributes** |
+  |---|---|
+  | **Mirror** | **selected** attributes are mirrored, **unselected** attributes are ignored. |
+  | **Lock** | **selected** attributes are reverted, **unselected** attributes are ignored. |
+  | **Mirror/Lock** | **selected** attributes are mirrored, **unselected** attributes are reverted. |
+  | **Master/Lock** | **selected** attributes are mirrored from the **Master Entity**, **unselected** attributes are ignored. Changes from non-master devices are always reverted. |
+
+*  **Respect Member Off State (Sync):** When a member is manually turned `off`, the group neither mirrors that `off` to others nor forces it back on — the member is simply left alone. The one exception: if it is the *last* active member, the group accepts the `off` and its own target switches to `off` as well.
 
 ### Window Control
 
@@ -195,10 +192,10 @@ You can omit attributes you don't need — for example, use only `hvac_mode: "of
 
 | Key | Possible values | Example | Effect |
 |---|---|---|---|
-| `turn_off` | `true` | `turn_off: true` | Activates the Main Switch block — all members are turned off for the slot duration. Equivalent to toggling the Main Switch off. Members are restored automatically when the slot ends or a new slot without `turn_off` begins. |
-| `sync_mode` | `disabled`, `lock`, `mirror`, `master_lock` | `sync_mode: disabled` | Temporarily overrides the configured Sync Mode for the slot duration. Useful for slots where you want members to be left alone (e.g. a "sleep" slot where manual adjustments are allowed). |
-| `group_offset` | Float −5.0 … 5.0 | `group_offset: 1.5` | Temporarily sets the Group Offset for the slot duration. If you move the offset slider manually while this slot is active, your value takes over and the slot-end reset is skipped. |
-| `sync_attributes` | Any subset of: `hvac_mode`, `temperature`, `target_temp_low`, `target_temp_high`, `humidity`, `fan_mode`, `preset_mode`, `swing_mode`, `swing_horizontal_mode` | `sync_attributes: [hvac_mode]` | Temporarily overrides which attributes are synchronized for the slot duration. Useful for slots where you want to sync only the mode but let members manage their own temperature. Restores to the configured Synced Attributes setting when the slot ends. |
+| `group_offset` | Float −5.0 … 5.0 | `group_offset: 1.5` | Temporarily sets the **Group Offset** for the slot duration. If you move the offset slider manually while this slot is active, your value takes over and the slot-end reset is skipped. |
+| `sync_mode` | `disabled`, `lock`, `mirror`, `master_lock` | `sync_mode: disabled` | Temporarily overrides the configured **Sync Mode** for the slot duration. Useful for slots where you want members to be left alone (e.g. a "sleep" slot where manual adjustments are allowed). |
+| `sync_attributes` | Any subset of: `hvac_mode`, `temperature`, `target_temp_low`, `target_temp_high`, `humidity`, `fan_mode`, `preset_mode`, `swing_mode`, `swing_horizontal_mode` | `sync_attributes: [hvac_mode]` | Temporarily overrides which **Sync Attributes** are synchronized for the slot duration. Useful for slots where you want to sync only the mode but let members manage their own temperature. Restores to the configured Sync Attributes setting when the slot ends. |
+| `turn_off` | `true` | `turn_off: true` | Activates the **Main Switch** block — all members are turned off for the slot duration. Equivalent to toggling the Main Switch off. Members are restored automatically when the slot ends or a new slot without `turn_off` begins. |
 
 **Example — night slot that turns everything off:**
 ```yaml
@@ -306,9 +303,9 @@ A dedicated `number` entity allows you to apply a global temperature shift (±5.
 
 | Option | Description |
 |--------|-------------|
-| **Sync Mode** | What to do when a member is changed outside the group. Disabled: ignore everything. **Mirror**: adopt + propagate listed attributes, ignore the rest. **Lock**: revert listed attributes, ignore the rest. **Mirror** & **Lock**: adopt listed attributes, revert everything else (nothing is ignored). **Master/Lock** *(requires Master Entity)*: adopt listed attributes from the master, revert non-master changes. |
-| **Synced Attributes** | Which attributes the mode acts on. In **Mirror**, **Lock**, **Master/Lock**: listed = active, unlisted = ignored. In **Mirror** & **Lock**: listed = mirrored, unlisted = locked. |
-| **Respect Member Off State (Sync)** | Members that are manually turned `off` are left alone — their `off` is neither mirrored to others nor reverted back to the group target. Exception: if it is the last active member, the group itself switches to `off` (Last Man Standing). Direct group commands always reach all members regardless of this setting. |
+| **Sync Mode** | What to do when a member is changed outside the group. **Disabled**: ignore everything. **Mirror**: mirror changes. **Lock**: revert changes. **Mirror/Lock**: mirror selected attributes, revert unselected attributes. **Master/Lock** *(requires Master Entity)*: mirror changes from the **Master Entity** only, revert changes from non-master entities. |
+| **Sync Attributes** | Which attributes the mode acts on. In **Mirror**: only selected attributes are mirrored, unselected = no action. In **Lock**: only selected attributes are reverted, unselected = no action. In **Mirror/Lock**: selected attributes are mirrored, unselected attributes are reverted. In **Master/Lock**: only the Master Entity's attributes are mirrored, unselected = no action. |
+| **Respect Member Off State (Sync)** | Members that are manually turned `off` are left alone. Their `off` state is neither mirrored to others nor reverted back to the group target. Exception: if it is the last active member, the group itself switches to `off` (Last Man Standing). Direct group commands always reach all members regardless of this setting. |
 
 ### Window Control
 
@@ -328,7 +325,7 @@ A dedicated `number` entity allows you to apply a global temperature shift (±5.
 |--------|-------------|
 | **Presence Control Mode** | **Disabled** (default) or **Enabled**. |
 | **Presence Trigger** | One or more entities reporting room presence (binary_sensor, device_tracker, or person). Any 'on' or 'home' state is treated as present. The group is occupied if **any** sensor reports presence. |
-| **Presence Zone** | *(Optional)* One or more `zone` entities. If configured, a person/device_tracker sensor only counts as present when located in one of the listed zones. Leave empty to treat any non-away state as present. |
+| **Presence Zone** | *(Optional)* One or more `zone` entities. If configured, a person/device_tracker sensor only counts as present when located in one of the selected zones. Leave empty to treat any non-away state as present. |
 | **Away Action** | The fallback action to perform when absence is detected: **Turn Off**, **Away Offset**, **Away Temperature**, or **Away Preset**. |
 | **Away Offset** | *(Away Offset action)* Offset from current target when away (e.g. `−2.0°C` or `+2.0°C`). |
 | **Away Temperature** | *(Away Temperature action)* Fixed temperature to set when away. |

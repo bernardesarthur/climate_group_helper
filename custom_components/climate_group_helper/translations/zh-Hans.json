@@ -406,7 +406,7 @@
   },
   "entity": {
     "climate": {
-      "climate_group": {
+      "climate_group_helper": {
         "name": "空调组",
         "state_attributes": {
           "last_active_hvac_mode": {

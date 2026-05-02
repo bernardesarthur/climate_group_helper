@@ -100,7 +100,14 @@ from .const import (
     CONF_TEMP_TARGET_ROUND,
     CONF_TEMP_UPDATE_TARGETS,
     CONF_TEMP_USE_MASTER,
+    CONF_ISOLATION_SENSOR,
+    CONF_PRESENCE_SENSOR,
+    CONF_PRESENCE_ZONE,
+    CONF_ROOM_SENSOR,
+    CONF_SCHEDULE_BYPASS_ENTITY,
+    CONF_SCHEDULE_ENTITY,
     CONF_WINDOW_ADOPT_MANUAL_CHANGES,
+    CONF_ZONE_SENSOR,
     DOMAIN,
     ENTITY_SELECTOR_KEYS,
     FLOAT_TOLERANCE,
@@ -186,6 +193,24 @@ DEFAULT_SUPPORTED_FEATURES = (
 _LOGGER = logging.getLogger(__name__)
 
 
+def _warn_missing_entities(hass: HomeAssistant, config: dict, group_entity_id: str) -> None:
+    """Log a warning for each configured entity that no longer exists in the state machine."""
+    checks: list[tuple[str, str]] = []
+    for key in (CONF_ROOM_SENSOR, CONF_ZONE_SENSOR, CONF_ISOLATION_SENSOR, CONF_SCHEDULE_ENTITY, CONF_SCHEDULE_BYPASS_ENTITY):
+        if val := config.get(key):
+            checks.append((key, val))
+    for key in (CONF_PRESENCE_SENSOR, CONF_PRESENCE_ZONE):
+        for eid in config.get(key, []):
+            checks.append((key, eid))
+    for key, eid in checks:
+        if hass.states.get(eid) is None:
+            _LOGGER.warning(
+                "[%s] Configured entity '%s' (option '%s') does not exist — "
+                "it may have been deleted. Update the integration options.",
+                group_entity_id, eid, key,
+            )
+
+
 def _filter_cgh_sensors(hass: HomeAssistant, entity_ids: list[str], label: str) -> list[str]:
     """Remove own CGH sensor entities from a sensor list and log a warning for each one found."""
     registry = er.async_get(hass)
@@ -215,7 +240,7 @@ async def async_setup_entry(
     registry = er.async_get(hass)
     entities = er.async_validate_entity_ids(registry, config[CONF_ENTITIES])
 
-    group = ClimateGroup(
+    group = ClimateGroupHelper(
         hass=hass,
         unique_id=config_entry.unique_id,
         name=config.get(CONF_NAME, config_entry.title),
@@ -231,7 +256,7 @@ async def async_setup_entry(
     async_add_entities([group])
 
 
-class ClimateGroup(GroupEntity, ClimateEntity, RestoreEntity):
+class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
     """Representation of a climate group."""
 
     def __init__(
@@ -374,6 +399,8 @@ class ClimateGroup(GroupEntity, ClimateEntity, RestoreEntity):
         self._attr_swing_horizontal_modes = None
         self._attr_swing_horizontal_mode = None
 
+        self._attr_translation_key = "climate_group_helper"
+
     @property
     def device_info(self) -> dict[str, Any]:
         """Return the device info."""
@@ -417,6 +444,8 @@ class ClimateGroup(GroupEntity, ClimateEntity, RestoreEntity):
             + self.temp_sensor_entity_ids
             + self.humidity_sensor_entity_ids
         )
+
+        _warn_missing_entities(self.hass, self.config, self.entity_id)
 
         _LOGGER.debug(
             "[%s] Registering core listeners: members=%s, temp_sensors=%s, humidity_sensors=%s",
@@ -666,10 +695,10 @@ class ClimateGroup(GroupEntity, ClimateEntity, RestoreEntity):
         """Sort HVAC modes based on a predefined order."""
 
         # Make sure OFF is always included
-        modes.append(HVACMode.OFF)
+        all_modes = set(modes) | {HVACMode.OFF}
 
         # Return modes sorted in the order of the HVACMode enum
-        return [m for m in HVACMode if m in modes]
+        return [m for m in HVACMode if m in all_modes]
 
     def _determine_hvac_mode(self, current_hvac_modes: list[str]) -> HVACMode | str | None:
         """Determine the group's HVAC mode based on member modes and strategy."""
@@ -822,7 +851,7 @@ class ClimateGroup(GroupEntity, ClimateEntity, RestoreEntity):
     @callback
     def _state_change_listener(self, event: Event | None = None) -> None:
         """Handle state changes."""
-        self.event = event
+        self.event: Event = event
         self.async_defer_or_update_ha_state()
 
     @callback
@@ -885,9 +914,9 @@ class ClimateGroup(GroupEntity, ClimateEntity, RestoreEntity):
             )
             self._event_entity_id = self.event.data.get(ATTR_ENTITY_ID)
 
-        # Check if the change state is from a member entity
-        if self.change_state and self.change_state.entity_id in self.climate_entity_ids:
-            self.sync_mode_handler.resync()
+            # Check if the change state is from a member entity
+            if self.change_state and self.change_state.entity_id in self.climate_entity_ids:
+                self.sync_mode_handler.resync()
 
         # All available HVAC modes --> list of HVACMode (str), e.g. [<HVACMode.OFF: 'off'>, <HVACMode.HEAT: 'heat'>, <HVACMode.AUTO: 'auto'>, ...]
         self._attr_hvac_modes = self._sort_hvac_modes(
@@ -941,6 +970,13 @@ class ClimateGroup(GroupEntity, ClimateEntity, RestoreEntity):
                 # We use restore source to bypass blocking during startup
                 self.schedule_state_manager.update(last_source="restore", **initial_data)
                 _LOGGER.debug("[%s] Initialized Persistent Target State from current values: %s", self.entity_id, self.shared_target_state)
+
+        # Clear instance-level event state after use — all three are persisted across
+        # calls, so stale values would cause spurious resync() or calibration triggers.
+        self.change_state = None
+        self.event = None
+        self._event_entity_id = None
+
 
     def _resolve_master_or_avg(self, use_master: bool, master_value, attr: str, avg_calc) -> float | None:
         """Return the display value for a temperature attribute.

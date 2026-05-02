@@ -5,10 +5,12 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
+from dataclasses import fields
 from typing import TYPE_CHECKING
 
 from homeassistant.core import Event
 from homeassistant.components.climate import HVACMode
+from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 
 from .const import (
     CONF_IGNORE_OFF_MEMBERS_SYNC,
@@ -20,10 +22,10 @@ from .const import (
     SYNC_TARGET_ATTRS,
     SyncMode,
 )
-from .state import FilterState
+from .state import ClimateState, FilterState
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _TRUSTED_CONTEXT_IDS = frozenset(
     {
@@ -54,7 +56,7 @@ class SyncModeHandler:
     single source of truth for what the desired state should be.
     """
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the sync mode handler."""
         self._group = group
         self._hass = group.hass
@@ -123,6 +125,9 @@ class SyncModeHandler:
             # even when sync enforcement is off.
             self._group.member_isolation_handler.check_member_off_isolation()
 
+            if not self._has_relevant_changes(event):
+                return
+
             # Block enforcement: each active blocking source enforces its own state.
             # Runs before the DISABLED guard so blocking is always enforced regardless
             # of sync_mode. Each enforce_override() is a no-op if its source is inactive.
@@ -157,6 +162,9 @@ class SyncModeHandler:
                 self.state_manager.update(entity_id=change_entity_id, **accepted)
             return
 
+        if self._is_transient_state_event(event):
+            return
+
         # --- Fresh Event (external change) ---
         _LOGGER.debug("[%s] External change: %s from %s", self._group.entity_id, change_dict, change_entity_id)
 
@@ -172,8 +180,13 @@ class SyncModeHandler:
                 _LOGGER.debug("[%s] Ignoring setpoint changes while OFF", self._group.entity_id)
                 return
 
-        # 1. Mirror mode: adopt filtered changes into target_state
-        if self.sync_mode in (SyncMode.MIRROR, SyncMode.MIRROR_LOCK):
+        # 1. Mirror mode: adopt filtered changes into target_state.
+        # Guard: skip adoption on reconnect (old_state was unavailable/unknown) — the device
+        # is reporting its restored hardware state, not a deliberate user change.
+        # LOCK enforcement below still runs to correct the member if needed.
+        old_state = event.data.get("old_state")
+        is_reconnect = old_state and old_state.state in (STATE_UNAVAILABLE, STATE_UNKNOWN)
+        if self.sync_mode in (SyncMode.MIRROR, SyncMode.MIRROR_LOCK) and not is_reconnect:
             if filtered := {key: value for key, value in change_dict.items() if self.filter_state.to_dict().get(key)}:
                 self._reverse_offset_temperatures(change_entity_id, filtered)
                 self.state_manager.update(entity_id=change_entity_id, **filtered)
@@ -246,6 +259,39 @@ class SyncModeHandler:
             except ValueError:
                 pass
         return ""
+
+    def _has_relevant_changes(self, event: Event) -> bool:
+        """Return True if the event changed at least one ClimateState field.
+
+        Filters out display-only updates (e.g. current_temperature, hvac_action)
+        that cannot affect sync decisions or enforcement.
+        """
+        new_state = event.data.get("new_state")
+        old_state = event.data.get("old_state")
+        if not new_state or not old_state:
+            return True
+        if new_state.state != old_state.state:
+            return True
+        return any(
+            new_state.attributes.get(f.name) != old_state.attributes.get(f.name)
+            for f in fields(ClimateState)
+            if f.name != "hvac_mode"
+        )
+
+    def _is_transient_state_event(self, event: Event) -> bool:
+        """Return True if the event carries a transient (unavailable/unknown) new_state.
+
+        Such events carry no meaningful climate state — the member is offline or
+        initialising. There is nothing to adopt or enforce against.
+        """
+        new_state = event.data.get("new_state")
+        if new_state and new_state.state in (STATE_UNAVAILABLE, STATE_UNKNOWN):
+            _LOGGER.debug(
+                "[%s] Ignoring transient new_state (%s) from %s",
+                self._group.entity_id, new_state.state, event.data.get("entity_id"),
+            )
+            return True
+        return False
 
     def _is_own_echo(self, event: Event) -> bool:
         """Return True if the event was caused by one of our own service calls.

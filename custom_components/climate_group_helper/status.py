@@ -1,4 +1,4 @@
-"""Status and analytics aggregation for ClimateGroup extra_state_attributes."""
+"""Status and analytics aggregation for ClimateGroupHelper extra_state_attributes."""
 from __future__ import annotations
 
 from datetime import datetime
@@ -46,10 +46,10 @@ from .const import (
 )
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 
-def build_extra_state_attributes(group: ClimateGroup) -> dict[str, Any]:
+def build_extra_state_attributes(group: ClimateGroupHelper) -> dict[str, Any]:
     """Collect all status, analytics, and source data into a single dict."""
     run_state = group.run_state
     target = group.shared_target_state

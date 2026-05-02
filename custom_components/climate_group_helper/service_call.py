@@ -42,7 +42,7 @@ from .const import (
 from .state import FilterState
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -64,11 +64,11 @@ class BaseServiceCallHandler(ABC):
 
     CONTEXT_ID: str = "service_call"  # Default context ID, override in derived classes
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the service call handler.
 
         Args:
-            group: Reference to the parent ClimateGroup entity.
+            group: Reference to the parent ClimateGroupHelper entity.
         """
         self._group = group
         self._hass = group.hass
@@ -200,7 +200,10 @@ class BaseServiceCallHandler(ABC):
                         context=Context(id=context_id, parent_id=parent_id),
                     )
 
-                    _LOGGER.debug("[%s] Call %d/%d (%d/%d) '%s' with data: %s, Parent ID: %s", self._group.entity_id, i + 1, len(calls), attempt + 1, attempts, service, service_data, parent_id)
+                    _LOGGER.debug("[%s] Call %d/%d (%d/%d) '%s' with data: %s, Parent ID: %s",
+                                  self._group.entity_id, i + 1, len(calls), attempt + 1, 
+                                  attempts, service, service_data, parent_id
+                    )
 
                 await self._after_call_trigger(data)
 
@@ -487,6 +490,47 @@ class BaseServiceCallHandler(ABC):
             return []
         return [{"service": service, "kwargs": {attr: value}, "entity_ids": entity_ids}]
 
+    def _process_unsupported_hvac(self, calls: list[dict]) -> list[dict]:
+        """Union strategy: handle members that don't support the requested HVAC mode."""
+        if (self._group.config.get(CONF_FEATURE_STRATEGY) != FeatureStrategy.UNION or
+            self._group.config.get(CONF_UNION_UNSUPPORTED_HVAC_ACTION) != UnsupportedHvacAction.OFF):
+            return calls
+
+        # Determine target mode: from call (if present) or current target_state
+        hvac_call = next((c for c in calls if ATTR_HVAC_MODE in c["kwargs"]), None)
+        target_mode = hvac_call["kwargs"][ATTR_HVAC_MODE] if hvac_call else self.target_state.hvac_mode
+
+        if not target_mode or target_mode == HVACMode.OFF:
+            return calls
+
+        # Identify members that technically do not support the target mode
+        unsupported = {
+            eid for eid in self._group.climate_entity_ids
+            if (state := self._hass.states.get(eid)) and 
+               (modes := state.attributes.get(ATTR_HVAC_MODES, [])) and 
+               target_mode not in modes
+        }
+
+        # Filter unsupported members out of all existing calls (e.g. temperature)
+        filtered = [
+            {**call, "entity_ids": [eid for eid in call["entity_ids"] if eid not in unsupported]}
+            for call in calls
+        ]
+
+        # For explicit HVAC_MODE changes, turn unsupported members OFF
+        if hvac_call:
+            for entity_id in unsupported:
+                state = self._hass.states.get(entity_id)
+                if state and state.state != HVACMode.OFF and not self._is_member_blocked(entity_id):
+                    filtered.append({
+                        "service": SERVICE_SET_HVAC_MODE,
+                        "kwargs": {ATTR_HVAC_MODE: HVACMode.OFF},
+                        "entity_ids": [entity_id],
+                        "injected": [ATTR_HVAC_MODE],
+                    })
+
+        return [call for call in filtered if call["entity_ids"]]
+
     def _process_min_temp_off(self, calls: list[dict]) -> list[dict]:
         """Handle min_temp_off: restructure HVAC_MODE calls for temp-capable devices.
 
@@ -558,6 +602,9 @@ class BaseServiceCallHandler(ABC):
         For calls with temperature kwargs that are not already injected,
         apply the configured offset. Members with offset are split into
         per-entity calls; members without offset are batched together.
+
+        Uses "member_offset_applied" (not "injected") so that _process_group_offset
+        can still add the global offset on top. Both offsets are additive.
         """
         if not self._group._temp_offset_map:
             return calls  # No-op when no offsets configured
@@ -568,7 +615,7 @@ class BaseServiceCallHandler(ABC):
         for call in calls:
             kwargs = call["kwargs"]
             injected = set(call.get("injected", []))
-            # Only transform temp attrs that are not already injected
+            # Only transform temp attrs that are not already injected (e.g. min_temp_off)
             transformable = temp_attrs & set(kwargs) - injected
 
             if not transformable:
@@ -592,7 +639,7 @@ class BaseServiceCallHandler(ABC):
                     **call,
                     "kwargs": adjusted_kwargs,
                     "entity_ids": [entity_id],
-                    "injected": list(injected | transformable),
+                    "member_offset_applied": list(transformable),
                 })
 
             if no_offset_ids:
@@ -601,7 +648,12 @@ class BaseServiceCallHandler(ABC):
         return result
 
     def _process_group_offset(self, calls: list[dict]) -> list[dict]:
-        """Shift temperature attributes by the global group offset."""
+        """Shift temperature attributes by the global group offset.
+
+        Applies on top of any member_offset_applied values — both offsets are additive.
+        Only skips attrs listed in "injected" (min_temp_off, OOB-clamp) which must not
+        be modified further.
+        """
         if not self._apply_group_offset():
             return calls
 
@@ -615,7 +667,7 @@ class BaseServiceCallHandler(ABC):
         for call in calls:
             kwargs = call["kwargs"]
             injected = set(call.get("injected", []))
-            # Only transform temp attrs that are not already injected
+            # Only skip "injected" (min_temp_off / OOB-clamp) — member_offset_applied passes through
             transformable = temp_attrs & set(kwargs) - injected
 
             if not transformable:
@@ -630,7 +682,7 @@ class BaseServiceCallHandler(ABC):
             result.append({
                 **call,
                 "kwargs": adjusted_kwargs,
-                "injected": list(injected | transformable)
+                "injected": list(injected | transformable),
             })
 
         return result
@@ -638,47 +690,6 @@ class BaseServiceCallHandler(ABC):
     def _apply_group_offset(self) -> bool:
         """Whether to apply the global group offset. False by default (direct-command handlers)."""
         return False
-
-    def _process_unsupported_hvac(self, calls: list[dict]) -> list[dict]:
-        """Union strategy: handle members that don't support the requested HVAC mode."""
-        if (self._group.config.get(CONF_FEATURE_STRATEGY) != FeatureStrategy.UNION or
-            self._group.config.get(CONF_UNION_UNSUPPORTED_HVAC_ACTION) != UnsupportedHvacAction.OFF):
-            return calls
-
-        # Determine target mode: from call (if present) or current target_state
-        hvac_call = next((c for c in calls if ATTR_HVAC_MODE in c["kwargs"]), None)
-        target_mode = hvac_call["kwargs"][ATTR_HVAC_MODE] if hvac_call else self.target_state.hvac_mode
-
-        if not target_mode or target_mode == HVACMode.OFF:
-            return calls
-
-        # Identify members that technically do not support the target mode
-        unsupported = {
-            eid for eid in self._group.climate_entity_ids
-            if (state := self._hass.states.get(eid)) and 
-               (modes := state.attributes.get(ATTR_HVAC_MODES, [])) and 
-               target_mode not in modes
-        }
-
-        # Filter unsupported members out of all existing calls (e.g. temperature)
-        filtered = [
-            {**call, "entity_ids": [eid for eid in call["entity_ids"] if eid not in unsupported]}
-            for call in calls
-        ]
-
-        # For explicit HVAC_MODE changes, turn unsupported members OFF
-        if hvac_call:
-            for entity_id in unsupported:
-                state = self._hass.states.get(entity_id)
-                if state and state.state != HVACMode.OFF and not self._is_member_blocked(entity_id):
-                    filtered.append({
-                        "service": SERVICE_SET_HVAC_MODE,
-                        "kwargs": {ATTR_HVAC_MODE: HVACMode.OFF},
-                        "entity_ids": [entity_id],
-                        "injected": [ATTR_HVAC_MODE],
-                    })
-
-        return [call for call in filtered if call["entity_ids"]]
 
     def _process_oob_guard(self, calls: list[dict]) -> list[dict]:
         """OOB guard: check if temperature values are within device range (union only).
@@ -769,8 +780,8 @@ class BaseServiceCallHandler(ABC):
                     "service": call["service"],
                     "kwargs": {**call_temp_attrs, **upstream_kwargs},
                     "entity_ids": in_range_ids,
-                    # Preserve injected from original call if present
                     **({"injected": call["injected"]} if call.get("injected") else {}),
+                    **({"member_offset_applied": call["member_offset_applied"]} if call.get("member_offset_applied") else {}),
                 })
 
         # Side effect: write oob_members once at end (retry-safe)
@@ -850,7 +861,7 @@ class BaseServiceCallHandler(ABC):
 
         # Deadlock Prevention: Don't skip if ALL members are OFF.
         return any(
-            self._hass.states.get(member_id).state != HVACMode.OFF
+            member_state.state != HVACMode.OFF
             for member_id in self._group.climate_entity_ids
             if (member_state := self._hass.states.get(member_id)) and member_state.state not in (STATE_UNAVAILABLE, STATE_UNKNOWN)
         )
@@ -881,7 +892,7 @@ class ClimateCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "group"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the climate call handler."""
         super().__init__(group)
 
@@ -911,9 +922,9 @@ class ClimateCallHandler(BaseServiceCallHandler):
         staleness check — their values intentionally deviate from target_state.
         """
         target = self.target_state.to_dict()
-        injected_attrs = call.get("injected", [])
+        skip_attrs = set(call.get("injected", [])) | set(call.get("member_offset_applied", []))
         for attr, value in call["kwargs"].items():
-            if attr in injected_attrs:
+            if attr in skip_attrs:
                 continue
             if attr in target and target[attr] is not None and target[attr] != value:
                 return True
@@ -944,7 +955,7 @@ class SyncCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "sync_mode"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the sync call handler."""
         super().__init__(group)
 
@@ -1002,13 +1013,24 @@ class WindowControlCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "window_control"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the window control call handler."""
         super().__init__(group)
 
     def _is_member_blocked(self, entity_id: str) -> bool:
         """Bypass global block, but still respect per-member isolation."""
         return entity_id in self._group.run_state.isolated_members
+
+    def _should_diff(self) -> bool:
+        # Only send to members that actually deviate — prevents enforce_override() from
+        # re-sending to members that are already at the correct window/restore value,
+        # which would generate echoes that trigger further enforce cycles.
+        return True
+
+    def _get_target_value(self, attr: str, value: Any = None) -> Any:
+        # Restore path: read target_state+offset so diff-check sees the same value members have.
+        # Override path (window open): value is the explicit payload — use as-is.
+        return self._get_target_value_with_offset(attr, value) if not self._group.run_state.blocking_sources else value
 
     def _apply_group_offset(self) -> bool:
         # Apply offset only during restore (blocking_sources empty = window just closed).
@@ -1025,13 +1047,22 @@ class PresenceCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "presence"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the presence call handler."""
         super().__init__(group)
 
     def _is_member_blocked(self, entity_id: str) -> bool:
         """Bypass global block, but still respect per-member isolation."""
         return entity_id in self._group.run_state.isolated_members
+
+    def _should_diff(self) -> bool:
+        # Same reasoning as WindowControlCallHandler — skip members already at the away value.
+        return True
+
+    def _get_target_value(self, attr: str, value: Any = None) -> Any:
+        # Restore path: read target_state+offset so diff-check sees the same value members have.
+        # Away path (presence active): value is the explicit away payload — use as-is.
+        return self._get_target_value_with_offset(attr, value) if not self._group.run_state.blocking_sources else value
 
     def _apply_group_offset(self) -> bool:
         # Apply offset only during restore (blocking_sources empty = presence just cleared).
@@ -1044,7 +1075,7 @@ class ScheduleCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "schedule"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the schedule call handler."""
         super().__init__(group)
 
@@ -1082,7 +1113,7 @@ class SwitchCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "switch"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the switch call handler."""
         super().__init__(group)
 
@@ -1106,7 +1137,7 @@ class SwitchEnforceCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "switch_enforce"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         super().__init__(group)
 
     def _is_member_blocked(self, entity_id: str) -> bool:
@@ -1124,7 +1155,7 @@ class OverrideCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "override"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the override call handler."""
         super().__init__(group)
 

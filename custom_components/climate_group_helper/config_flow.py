@@ -118,7 +118,7 @@ from .climate import (
 )
 
 
-class ClimateGroupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class ClimateGroupHelperConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Climate Group."""
 
     VERSION = 10
@@ -127,9 +127,9 @@ class ClimateGroupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
-    ) -> ClimateGroupOptionsFlow:
+    ) -> ClimateGroupHelperOptionsFlow:
         """Create the options flow."""
-        return ClimateGroupOptionsFlow(config_entry)
+        return ClimateGroupHelperOptionsFlow(config_entry)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -170,7 +170,7 @@ class ClimateGroupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
 
-class ClimateGroupOptionsFlow(config_entries.OptionsFlow):
+class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
     """Climate Group options flow."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:

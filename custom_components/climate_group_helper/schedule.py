@@ -64,7 +64,7 @@ class ScheduleCaller(StrEnum):
 
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -77,7 +77,7 @@ class ScheduleBaseHandler:
     all helpers used by both ScheduleHandler and ScheduleBypassHandler.
     """
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         self._group = group
         self._hass = group.hass
         self._schedule_entity = group.config.get(CONF_SCHEDULE_ENTITY) if group.advanced_mode else None
@@ -353,7 +353,7 @@ class ScheduleBaseHandler:
 class ScheduleHandler(ScheduleBaseHandler):
     """Manages the basis schedule entity: listener lifecycle and dynamic entity switching."""
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         super().__init__(group)
         self._unsub_listener = None
 
@@ -436,7 +436,7 @@ class ScheduleBypassHandler(ScheduleBaseHandler):
     subscribed when the startup check fires here.
     """
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         super().__init__(group)
         self._unsub_listener = None
 
@@ -480,6 +480,12 @@ class ScheduleBypassHandler(ScheduleBaseHandler):
         """Switch the active bypass entity at runtime (service: set_schedule_bypass_entity)."""
         self._unsubscribe()
         self._bypass_entity = new_entity_id or self._group.config.get(CONF_SCHEDULE_BYPASS_ENTITY)
+
+        # Sync with ScheduleHandler so its timer-suspend and slot-merge logic uses the new entity.
+        # Both handler instances inherit _bypass_entity from ScheduleBaseHandler.__init__,
+        # but they are separate instances — updating one does not update the other.
+        self._group.schedule_handler._bypass_entity = self._bypass_entity
+
         _LOGGER.debug("[%s] Bypass entity updated: %s", self._group.entity_id, self._bypass_entity or "(none)")
 
         if self._bypass_entity:

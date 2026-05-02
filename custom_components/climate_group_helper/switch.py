@@ -19,7 +19,7 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from .const import DOMAIN
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ class ControlSwitch(SwitchEntity, RestoreEntity):
     _attr_has_entity_name = True
     _attr_should_poll = False
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         """Initialize the main switch."""
         self._group = group
         self._attr_icon = "mdi:power"
@@ -67,7 +67,7 @@ class ControlSwitch(SwitchEntity, RestoreEntity):
 
     @property
     def device_info(self) -> dict[str, Any]:
-        """Return the device info (same device as the ClimateGroup)."""
+        """Return the device info (same device as the ClimateGroupHelper)."""
         return self._group.device_info
 
     async def async_added_to_hass(self) -> None:

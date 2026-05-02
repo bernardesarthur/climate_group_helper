@@ -19,7 +19,7 @@ from .const import (
 )
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -241,7 +241,7 @@ class BaseStateManager:
 
     SOURCE: str = "state_manager"  # Default source, override in derived classes
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the state manager."""
         self._group = group
 
@@ -364,11 +364,11 @@ class BaseStateManager:
 
 
 class ClimateStateManager(BaseStateManager):
-    """State Manager for ClimateGroup operations."""
+    """State Manager for ClimateGroupHelper operations."""
 
     SOURCE = "group"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the climate state manager."""
         super().__init__(group)
 
@@ -393,7 +393,7 @@ class SyncModeStateManager(BaseStateManager):
 
     SOURCE = "sync_mode"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the sync mode state manager."""
         super().__init__(group)
 
@@ -428,7 +428,7 @@ class WindowControlStateManager(BaseStateManager):
 
     SOURCE = "window_control"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the window control state manager."""
         super().__init__(group)
 
@@ -448,7 +448,7 @@ class ScheduleStateManager(BaseStateManager):
 
     SOURCE = "schedule"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the schedule state manager."""
         super().__init__(group)
 
@@ -459,6 +459,6 @@ class IsolationStateManager(BaseStateManager):
 
     SOURCE = "isolation"
 
-    def __init__(self, group: ClimateGroup):
+    def __init__(self, group: ClimateGroupHelper):
         """Initialize the isolation state manager."""
         super().__init__(group)

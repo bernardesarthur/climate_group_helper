@@ -5,7 +5,14 @@ import logging
 import time
 from typing import TYPE_CHECKING, Any
 
-from homeassistant.const import STATE_CLOSING, STATE_ON, STATE_OPEN, STATE_OPENING
+from homeassistant.const import (
+    STATE_CLOSING,
+    STATE_ON,
+    STATE_OPEN,
+    STATE_OPENING,
+    STATE_UNAVAILABLE,
+    STATE_UNKNOWN,
+)
 from homeassistant.core import Event, EventStateChangedData, callback
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event
 
@@ -23,7 +30,7 @@ from .const import (
 )
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +42,7 @@ WINDOW_OPEN = "open"
 class WindowControlHandler:
     """Manages dual-timer Room+Zone window control logic."""
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         """Initialize the window control handler."""
         self._group = group
         self._hass = group.hass
@@ -54,8 +61,8 @@ class WindowControlHandler:
 
         self._room_open = False
         self._zone_open = False
-        self._room_last_changed = None
-        self._zone_last_changed = None
+        self._room_last_changed = float("inf")
+        self._zone_last_changed = float("inf")
 
         _LOGGER.debug(
             "[%s] WindowControl initialized. (room: %s.open_delay: %ds), (zone: %s.open_delay: %ds), (room/zone: close_delay: %ds)",
@@ -187,28 +194,32 @@ class WindowControlHandler:
         Return the control mode and the timer delay.
         Return None if no sensors are configured.
         """
-        self._room_open = None
-        self._zone_open = None
-        self._room_last_changed = None
-        self._zone_last_changed = None
+        self._room_open = False
+        self._zone_open = False
+        self._room_last_changed = float("inf")
+        self._zone_last_changed = float("inf")
 
         # If no sensors are configured, return None
         if not self._room_sensor and not self._zone_sensor:
             return None
 
-        # If no room sensor is configured, room is always closed
+        # If no room sensor is configured, room is always closed.
+        # Transient states (unavailable/unknown) preserve the last known value.
         if self._room_sensor and (state := self._hass.states.get(self._room_sensor)):
-            self._room_open = state.state in (STATE_ON, STATE_OPEN, STATE_OPENING, STATE_CLOSING)
-            self._room_last_changed = time.time() - state.last_changed.timestamp()
-        else:
+            if state.state not in (STATE_UNAVAILABLE, STATE_UNKNOWN):
+                self._room_open = state.state in (STATE_ON, STATE_OPEN, STATE_OPENING, STATE_CLOSING)
+                self._room_last_changed = time.time() - state.last_changed.timestamp()
+        elif self._room_sensor is None:
             self._room_open = False
             self._room_last_changed = float("inf")
 
-        # If no zone sensor is configured, use room sensor state
+        # If no zone sensor is configured, use room sensor state.
+        # Transient states (unavailable/unknown) preserve the last known value.
         if self._zone_sensor and (state := self._hass.states.get(self._zone_sensor)):
-            self._zone_open = state.state in (STATE_ON, STATE_OPEN, STATE_OPENING, STATE_CLOSING) or self._room_open
-            self._zone_last_changed = time.time() - state.last_changed.timestamp()
-        else:
+            if state.state not in (STATE_UNAVAILABLE, STATE_UNKNOWN):
+                self._zone_open = state.state in (STATE_ON, STATE_OPEN, STATE_OPENING, STATE_CLOSING) or self._room_open
+                self._zone_last_changed = time.time() - state.last_changed.timestamp()
+        elif self._zone_sensor is None:
             self._zone_open = self._room_open
             self._zone_last_changed = self._room_last_changed
 
@@ -224,7 +235,7 @@ class WindowControlHandler:
 
         # Calculate mode and delay
         mode = WINDOW_OPEN if self._zone_open or self._room_open else WINDOW_CLOSE
-        delay = (delay_room_open or delay_zone_open or delay_zone_close) or 0
+        delay = next((d for d in (delay_room_open, delay_zone_open, delay_zone_close) if d is not None), 0)
 
         _LOGGER.debug("[%s] Window control: mode=%s, delay=%.1fs (room_open=%s, zone_open=%s)",
             self._group.entity_id, mode, delay, self._room_open, self._zone_open)

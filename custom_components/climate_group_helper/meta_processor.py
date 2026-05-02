@@ -30,7 +30,7 @@ from .const import (
 )
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -85,11 +85,11 @@ class SlotMetaProcessor:
     cleaned climate_payload in return — it has no knowledge of individual key
     semantics or the transition state between slots.
 
-    One instance lives on ClimateGroup for the lifetime of the group.
+    One instance lives on ClimateGroupHelper for the lifetime of the group.
     """
 
-    def __init__(self, group: ClimateGroup) -> None:
-        """Initialize with the owning ClimateGroup."""
+    def __init__(self, group: ClimateGroupHelper) -> None:
+        """Initialize with the owning ClimateGroupHelper."""
         self._group = group
         self._active_keys: set[str] = set()  # meta-keys that were active in the last slot
 

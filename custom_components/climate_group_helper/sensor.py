@@ -26,9 +26,7 @@ from .const import (
     CONF_HUMIDITY_SENSORS,
     CONF_TEMP_SENSORS,
     DOMAIN,
-    ENTITY_SELECTOR_KEYS,
     IDENTITY_KEYS,
-    MEMBER_LIST_KEYS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -67,17 +65,17 @@ async def async_setup_entry(
             bool(config_entry.options.get(CONF_TEMP_SENSORS))
             or (group_state is not None and group_state.attributes.get(ATTR_CURRENT_TEMPERATURE) is not None)
         ):
-            new_entities.append(ClimateGroupTemperatureSensor(hass, config_entry, climate_group_entity_id))
+            new_entities.append(ClimateGroupHelperTemperatureSensor(hass, config_entry, climate_group_entity_id))
 
         if (
             bool(config_entry.options.get(CONF_HUMIDITY_SENSORS))
             or (group_state is not None and group_state.attributes.get(ATTR_CURRENT_HUMIDITY) is not None)
         ):
-            new_entities.append(ClimateGroupHumiditySensor(hass, config_entry, climate_group_entity_id))
+            new_entities.append(ClimateGroupHelperHumiditySensor(hass, config_entry, climate_group_entity_id))
 
     # Handle Configuration Sensor lifecycle
     if config_entry.options.get(CONF_EXPOSE_CONFIG, False):
-        new_entities.append(ClimateGroupConfigurationSensor(hass, config_entry))
+        new_entities.append(ClimateGroupHelperConfigurationSensor(hass, config_entry))
         _LOGGER.debug("[%s] Adding configuration sensor", config_entry.title)
     else:
         # Clean up existing entity if it was previously enabled
@@ -90,7 +88,7 @@ async def async_setup_entry(
         async_add_entities(new_entities)
 
 
-class ClimateGroupBaseSensor(SensorEntity):
+class ClimateGroupHelperBaseSensor(SensorEntity):
     """Base class for a climate group sensor."""
 
     _attr_has_entity_name = True
@@ -139,7 +137,7 @@ class ClimateGroupBaseSensor(SensorEntity):
         }
 
 
-class ClimateGroupTemperatureSensor(ClimateGroupBaseSensor):
+class ClimateGroupHelperTemperatureSensor(ClimateGroupHelperBaseSensor):
     """Representation of a climate group temperature sensor."""
 
     _attr_device_class = SensorDeviceClass.TEMPERATURE
@@ -172,7 +170,7 @@ class ClimateGroupTemperatureSensor(ClimateGroupBaseSensor):
         return value
 
 
-class ClimateGroupHumiditySensor(ClimateGroupBaseSensor):
+class ClimateGroupHelperHumiditySensor(ClimateGroupHelperBaseSensor):
     """Representation of a climate group humidity sensor."""
 
     _attr_device_class = SensorDeviceClass.HUMIDITY
@@ -205,7 +203,7 @@ class ClimateGroupHumiditySensor(ClimateGroupBaseSensor):
         return value
 
 
-class ClimateGroupConfigurationSensor(SensorEntity):
+class ClimateGroupHelperConfigurationSensor(SensorEntity):
     """Representation of a climate group configuration sensor."""
 
     _attr_has_entity_name = True
@@ -240,11 +238,10 @@ class ClimateGroupConfigurationSensor(SensorEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return the configuration as portable JSON."""
-        excluded = IDENTITY_KEYS | MEMBER_LIST_KEYS | ENTITY_SELECTOR_KEYS
         portable_config = {
             key: value
             for key, value in self.config_entry.options.items()
-            if key not in excluded
+            if key not in IDENTITY_KEYS
         }
         return {ATTR_SETTINGS_JSON: json.dumps(portable_config)}
 

@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.28.1 - 2026-05-02
+
+### ✨ Improvements
+
+*   **Icons**: Extended icon coverage for `preset_mode`, `fan_mode`, and `swing_mode` to include common values from popular climate integrations (`frost_guard`, `antifrost`, `vacation`, `holiday`, `schedule`, `turbo` and more).
+
+### 🔧 Fixes
+
+*   **Schedule Bypass**: Fixed a bug where switching the bypass entity via `set_schedule_bypass_entity` did not take effect immediately — subsequent slot changes still used the previous bypass entity.
+
+*   **Temperature Offsets**: Fixed a bug where the **Group Offset** had no effect when a **Member Offset** was also configured — only one of the two was applied.
+
+*   **Mirror Mode on Reconnect**: Fixed a bug where Mirror mode adopted the restored hardware state of a reconnecting device as a deliberate change, potentially overwriting the group's target temperature.
+
+*   **Member Isolation on Sensor Glitch**: Fixed a bug where a member briefly going offline could incorrectly release itself from **Member Off** isolation.
+
+*   **Window Sensor on Glitch**: Fixed a bug where a window sensor briefly going offline was treated as "closed", potentially triggering a premature restore.
+
+*   **Last Man Standing with Offline Devices**: Fixed a bug where an offline member was counted as still active, preventing **Last Man Standing** from firing when the last reachable device was turned off.
+
+*   **Apply Config — Entity Selectors not transferred**: Fixed a bug where sensors, window sensors, and schedule entity fields were missing from the exported config even when **Include Entity Selectors** was enabled.
+
 ## 0.28.0 - 2026-04-28
 
 ### 🌟 New Features

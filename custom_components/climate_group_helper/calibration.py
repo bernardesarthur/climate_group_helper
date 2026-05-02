@@ -23,7 +23,7 @@ from .const import (
 )
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class CalibrationHandler:
     regardless of their current state.
     """
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         """Initialize the calibration handler."""
         self._group = group
         self._hass = group.hass

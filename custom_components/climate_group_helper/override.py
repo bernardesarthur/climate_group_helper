@@ -23,7 +23,7 @@ from .schedule import ScheduleCaller
 from .state import ClimateState
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -32,11 +32,11 @@ class OverrideHandler:
     """Coordinator for all override managers.
 
     Owns async_setup/async_teardown and routes call_triggers to BoostOverrideManager.
-    Individual managers are instantiated on ClimateGroup and accessed directly
+    Individual managers are instantiated on ClimateGroupHelper and accessed directly
     by their respective modules (window_control, switch, climate).
     """
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         self._group = group
 
     @property
@@ -82,7 +82,7 @@ class BaseOverrideManager:
 
     OVERRIDE_NAME: str = "base"  # RunState active_override value when timer is active
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         self._group = group
         self._hass = group.hass
         self._timer: Any = None
@@ -259,7 +259,7 @@ class WindowOverrideManager(BaseOverrideManager):
 
     OVERRIDE_NAME = "window"
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         super().__init__(group)
         self._window_action = group.config.get(CONF_WINDOW_ACTION, WindowControlAction.OFF)
         self._window_temperature: float | None = group.config.get(CONF_WINDOW_TEMPERATURE)
@@ -316,7 +316,7 @@ class PresenceOverrideManager(BaseOverrideManager):
 
     OVERRIDE_NAME = "presence"
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         super().__init__(group)
         self._action = group.config.get(CONF_PRESENCE_ACTION, PresenceAction.OFF)
         self._away_offset = group.config.get(CONF_PRESENCE_AWAY_OFFSET, -2.0)

@@ -21,7 +21,7 @@ from .const import (
 from .override import PresenceOverrideManager
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class PresenceHandler:
     Only one timer is active at a time: either an away timer or a return timer.
     """
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         self._group = group
         self._hass = group.hass
         self._mode = group.config.get(CONF_PRESENCE_MODE, PresenceMode.DISABLED)

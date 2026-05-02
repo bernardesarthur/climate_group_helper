@@ -23,7 +23,7 @@ from .const import (
 from .service_call import BaseServiceCallHandler
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class MemberIsolationHandler:
       3. Syncs each entity back to the current target_state (unless globally blocked).
     """
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         """Initialize the member isolation handler."""
         self._group = group
         self._hass = group.hass
@@ -138,7 +138,7 @@ class MemberIsolationHandler:
 
     @callback
     def on_target_hvac_mode_changed(self, hvac_mode: str | None) -> None:
-        """Called by ClimateGroup when target_state.hvac_mode changes (HVAC_MODE trigger only)."""
+        """Called by ClimateGroupHelper when target_state.hvac_mode changes (HVAC_MODE trigger only)."""
         if self._trigger != IsolationTrigger.HVAC_MODE or not self._trigger_hvac_modes:
             return
 
@@ -253,6 +253,12 @@ class MemberIsolationHandler:
         if old_hvac_mode == new_hvac_mode:
             return
 
+        # Transient states carry no meaningful HVAC mode — ignore entirely.
+        # unavailable/unknown → X: not a deliberate user action, skip isolation/release.
+        # X → unavailable/unknown: member going offline, skip release of existing isolation.
+        if STATE_UNAVAILABLE in (old_hvac_mode, new_hvac_mode) or STATE_UNKNOWN in (old_hvac_mode, new_hvac_mode):
+            return
+
         trigger = self._group.config.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED)
         if trigger != IsolationTrigger.MEMBER_OFF:
             return
@@ -288,6 +294,8 @@ class MemberIsolationHandler:
             eid for eid in self._group.climate_entity_ids
             if eid not in self._group.run_state.isolated_members
             and eid != entity_id
+            and (s := self._hass.states.get(eid))
+            and s.state not in (STATE_UNAVAILABLE, STATE_UNKNOWN)
         ]
         if not remaining_active:
             _LOGGER.debug("[%s] Last active member %s going OFF — clearing all isolated members", self._group.entity_id, entity_id)
@@ -332,7 +340,7 @@ class IsolationCallHandler(BaseServiceCallHandler):
 
     CONTEXT_ID = "isolation"
 
-    def __init__(self, group: ClimateGroup, entity_id: str) -> None:
+    def __init__(self, group: ClimateGroupHelper, entity_id: str) -> None:
         """Initialize with a fixed target entity."""
         super().__init__(group)
         self._entity_id = entity_id

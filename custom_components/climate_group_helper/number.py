@@ -14,7 +14,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN, META_KEY_GROUP_OFFSET
 
 if TYPE_CHECKING:
-    from .climate import ClimateGroup
+    from .climate import ClimateGroupHelper
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class OffsetNumber(RestoreNumber, NumberEntity):
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
     _attr_should_poll = False
 
-    def __init__(self, group: ClimateGroup) -> None:
+    def __init__(self, group: ClimateGroupHelper) -> None:
         """Initialize the offset number."""
         self._group = group
         self._attr_icon = "mdi:thermometer-plus"

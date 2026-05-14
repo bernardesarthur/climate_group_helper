@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 
 from homeassistant.const import (
     STATE_CLOSING,
@@ -31,6 +31,8 @@ from .const import (
 
 if TYPE_CHECKING:
     from .climate import ClimateGroupHelper
+    from .override import WindowOverrideManager
+    from .state import TargetState
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,8 +48,8 @@ class WindowControlHandler:
         """Initialize the window control handler."""
         self._group = group
         self._hass = group.hass
-        self._timer_cancel: Any = None
-        self._unsub_listener = None
+        self._timer_cancel: Callable[[], None] | None = None
+        self._unsub_listener: Callable[[], None] | None = None
 
         self._window_control_mode = self._group.config.get(CONF_WINDOW_MODE, WindowControlMode.DISABLED)
         self._control_state = WINDOW_CLOSE
@@ -61,31 +63,19 @@ class WindowControlHandler:
 
         self._room_open = False
         self._zone_open = False
-        self._room_last_changed = float("inf")
-        self._zone_last_changed = float("inf")
 
         _LOGGER.debug(
             "[%s] WindowControl initialized. (room: %s.open_delay: %ds), (zone: %s.open_delay: %ds), (room/zone: close_delay: %ds)",
             group.entity_id, self._room_sensor, self._room_delay, self._zone_sensor, self._zone_delay, self._close_delay)
 
     @property
-    def state_manager(self):
-        """Return the specialized state manager for window control (read-only)."""
-        return self._group.window_control_state_manager
-
-    @property
-    def override_manager(self):
+    def override_manager(self) -> WindowOverrideManager:
         return self._group.window_override_manager
 
     @property
-    def call_handler(self):
-        """Return the specialized call handler for window control operations."""
-        return self._group.window_control_call_handler
-
-    @property
-    def target_state(self):
+    def target_state(self) -> TargetState:
         """Return the current target state (from central source)."""
-        return self.state_manager.target_state
+        return self._group.window_control_state_manager.target_state
 
     @property
     def force_off(self) -> bool:
@@ -162,7 +152,11 @@ class WindowControlHandler:
     def _timer_expired(self, now: Any) -> None:
         """Timer callback – recalculate and execute current action."""
         self._timer_cancel = None
-        mode, _ = self._window_control_logic()
+        result = self._window_control_logic()
+        if result is None:
+            _LOGGER.debug("[%s] Window control sensors not available on timer expiry", self._group.entity_id)
+            return
+        mode, _ = result
         if mode:
             self._hass.async_create_task(self._execute_action(mode))
 
@@ -190,43 +184,37 @@ class WindowControlHandler:
 
     def _window_control_logic(self) -> tuple[str, float] | None:
         """This method implements the core logic for window control.
-        
+
         Return the control mode and the timer delay.
         Return None if no sensors are configured.
         """
-        self._room_open = False
-        self._zone_open = False
-        self._room_last_changed = float("inf")
-        self._zone_last_changed = float("inf")
-
-        # If no sensors are configured, return None
         if not self._room_sensor and not self._zone_sensor:
             return None
+
+        room_last_changed = float("inf")
+        zone_last_changed = float("inf")
 
         # If no room sensor is configured, room is always closed.
         # Transient states (unavailable/unknown) preserve the last known value.
         if self._room_sensor and (state := self._hass.states.get(self._room_sensor)):
             if state.state not in (STATE_UNAVAILABLE, STATE_UNKNOWN):
                 self._room_open = state.state in (STATE_ON, STATE_OPEN, STATE_OPENING, STATE_CLOSING)
-                self._room_last_changed = time.time() - state.last_changed.timestamp()
-        elif self._room_sensor is None:
-            self._room_open = False
-            self._room_last_changed = float("inf")
+                room_last_changed = time.time() - state.last_changed.timestamp()
 
         # If no zone sensor is configured, use room sensor state.
         # Transient states (unavailable/unknown) preserve the last known value.
         if self._zone_sensor and (state := self._hass.states.get(self._zone_sensor)):
             if state.state not in (STATE_UNAVAILABLE, STATE_UNKNOWN):
                 self._zone_open = state.state in (STATE_ON, STATE_OPEN, STATE_OPENING, STATE_CLOSING) or self._room_open
-                self._zone_last_changed = time.time() - state.last_changed.timestamp()
+                zone_last_changed = time.time() - state.last_changed.timestamp()
         elif self._zone_sensor is None:
             self._zone_open = self._room_open
-            self._zone_last_changed = self._room_last_changed
+            zone_last_changed = room_last_changed
 
         # Calculate timers
-        timer_room_open = max(self._room_delay - self._room_last_changed, 0) if self._room_open else self._room_delay
-        timer_zone_open = max(self._zone_delay - self._zone_last_changed, 0) if self._zone_open else self._zone_delay
-        timer_zone_close = max(self._close_delay - self._zone_last_changed, 0) if not self._zone_open else self._close_delay
+        timer_room_open = max(self._room_delay - room_last_changed, 0) if self._room_open else self._room_delay
+        timer_zone_open = max(self._zone_delay - zone_last_changed, 0) if self._zone_open else self._zone_delay
+        timer_zone_close = max(self._close_delay - zone_last_changed, 0) if not self._zone_open else self._close_delay
 
         # Calculate delays
         delay_room_open = min(timer_room_open, timer_zone_open) if self._room_open else None

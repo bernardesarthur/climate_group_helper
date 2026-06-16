@@ -274,6 +274,8 @@ Apply permanent individual offsets (±20°C) to each group member to account for
 
 Temporarily isolate specific members from the group using sensors or state triggers. While isolation is active, these devices are turned `off` and excluded from all averaging and synchronization calculations. Window Control and the Main Switch always take priority over Member Isolation. At least one member must always remain active to ensure the group stays operational.
 
+You can define **up to 4 independent isolation rules** per group, each with its own trigger, member list, and delays — useful for rooms with mixed device types. For example, a room with both a radiator (heat-only) and an AC (heat/cool) can use one rule to isolate the AC when the group switches to `heat`, and a second rule to isolate the radiator when it switches to `cool`.
+
 *   **Binary Sensor:** Isolation activates when a binary sensor (e.g. curtain sensor, occupancy helper) turns `on`.
 *   **HVAC Mode:** Isolation activates when the group's target mode matches a configured set (e.g. isolate radiators when switching to `cool`).
 *   **Member Off:** Automatically isolates individual members when they are turned `off` manually. Restoration occurs as soon as the device is turned back `on`.
@@ -425,6 +427,7 @@ A dedicated `number` entity allows you to apply a global temperature shift (±5.
 
 | Option | Description |
 |--------|-------------|
+| **Number of Rules** | How many independent isolation rules to configure (1–4). Each rule has its own trigger, members, and delays. Save after changing to reveal or hide additional rule sections. |
 | **Trigger Type** | **Binary Sensor** (activates when sensor is ON), **HVAC Mode** (activates when group mode matches), or **Member Off** (isolates each member individually when it turns off manually). |
 | **Isolation Sensor** | *(Sensor trigger)* Binary sensor that triggers isolation when active. |
 | **HVAC Mode Trigger** | *(HVAC Mode trigger)* The group modes that activate isolation. |
@@ -444,6 +447,7 @@ A dedicated `number` entity allows you to apply a global temperature shift (±5.
 | Option | Description |
 |--------|-------------|
 | **Debounce Delay** | Wait before sending commands. Higher values prevent 'rapid-fire' commands when sliding controls, but feel slower (default: 0.5s). |
+| **Force Retry** | Always send commands to all members, even if they already report the target state. Useful for IR-based AC units or other devices that may not reliably update their state after receiving a command. |
 | **Retry Attempts** | Number of retries if a command fails. |
 | **Retry Delay** | Time between retries (e.g. 1.0s). |
 | **Staggered Call Delay** | Time to wait between individual commands to group members (0–2s, default: 0). Staggering calls prevents radio flooding in large Zigbee/Matter networks. Also applies to calibration writes. |
@@ -614,6 +618,13 @@ logger:
   default: info
   logs:
     custom_components.climate_group_helper: debug
+```
+
+#### Sharing the log
+Ideally, share the full log file. If you prefer not to share unrelated data, you can strip it down to only the integration's entries:
+
+```bash
+grep 'climate_group_helper' home-assistant.log > cgh.log
 ```
 
 ## Contributing

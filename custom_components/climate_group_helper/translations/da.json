@@ -201,20 +201,82 @@
             "name": "Medlemsisolering",
             "description": "Isoler midlertidigt specifikke medlemmer (f.eks. radiatorer bag gardiner) når en binær sensor er aktiv.",
             "data": {
-              "isolation_trigger": "Udløsertype",
-              "isolation_sensor": "Isoleringsensor",
-              "isolation_trigger_hvac_modes": "HVAC-tilstand udløser",
-              "isolation_entities": "Enheder der skal isoleres",
-              "isolation_activate_delay": "Aktiveringsforsinkelse (sekunder)",
-              "isolation_restore_delay": "Gendannelsesforsinkelse (sekunder)"
+              "isolation_rule_count": "Antal regler",
+              "isolation_rule_1_trigger": "Triggertype",
+              "isolation_rule_1_sensor": "Isolationssensor",
+              "isolation_rule_1_hvac_modes": "HVAC-tilstand trigger",
+              "isolation_rule_1_entities": "Enheder der skal isoleres",
+              "isolation_rule_1_activate_delay": "Aktiveringsforsinkelse (sekunder)",
+              "isolation_rule_1_restore_delay": "Gendannelsesforsinkelse (sekunder)"
             },
             "data_description": {
-              "isolation_trigger": "Vælg hvad der aktiverer isolationen: en binær sensor eller en bestemt HVAC-tilstand for gruppen.",
-              "isolation_sensor": "(Valgfri) Binær sensor der udløser isolering når ON.",
-              "isolation_trigger_hvac_modes": "(HVAC-tilstand udløser) Isolation aktiveres, når gruppens måltilstand er en af disse.",
-              "isolation_entities": "Gruppemedlemmer der skal isoleres når sensoren er aktiv.",
-              "isolation_activate_delay": "(Kun sensor / HVAC-tilstand trigger) Ventetid efter sensor ON inden isolering af medlemmer.",
-              "isolation_restore_delay": "(Kun sensor / HVAC-tilstand trigger) Ventetid efter sensor OFF inden gendannelse af medlemmer."
+              "isolation_rule_count": "Hvor mange uafhængige isolationsregler der vises. Gem efter ændring for at vise eller skjule yderligere regelslots.",
+              "isolation_rule_1_trigger": "Vælg hvad der aktiverer isolation: en binær sensor eller en bestemt HVAC-tilstand for gruppen.",
+              "isolation_rule_1_sensor": "(Sensor-trigger) Binær sensor der udløser isolation ved ON.",
+              "isolation_rule_1_hvac_modes": "(HVAC-tilstand trigger) Isolation aktiveres når gruppens målrettet tilstand er en af disse.",
+              "isolation_rule_1_entities": "Gruppemedlemmer der isoleres når triggeren er aktiv.",
+              "isolation_rule_1_activate_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger aktiveres, inden medlemmer isoleres.",
+              "isolation_rule_1_restore_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger deaktiveres, inden medlemmer gendannes til gruppens målrettede tilstand."
+            }
+          },
+          "isolation_rule_2_section": {
+            "name": "Medlemsisolation – Regel 2",
+            "description": "Valgfri anden isolationsregel med uafhængig trigger og medlemsliste.",
+            "data": {
+              "isolation_rule_2_trigger": "Triggertype",
+              "isolation_rule_2_sensor": "Isolationssensor",
+              "isolation_rule_2_hvac_modes": "HVAC-tilstand trigger",
+              "isolation_rule_2_entities": "Enheder der skal isoleres",
+              "isolation_rule_2_activate_delay": "Aktiveringsforsinkelse (sekunder)",
+              "isolation_rule_2_restore_delay": "Gendannelsesforsinkelse (sekunder)"
+            },
+            "data_description": {
+              "isolation_rule_2_trigger": "Vælg hvad der aktiverer isolation: en binær sensor eller en bestemt HVAC-tilstand for gruppen.",
+              "isolation_rule_2_sensor": "(Sensor-trigger) Binær sensor der udløser isolation ved ON.",
+              "isolation_rule_2_hvac_modes": "(HVAC-tilstand trigger) Isolation aktiveres når gruppens målrettet tilstand er en af disse.",
+              "isolation_rule_2_entities": "Gruppemedlemmer der isoleres når triggeren er aktiv.",
+              "isolation_rule_2_activate_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger aktiveres, inden medlemmer isoleres.",
+              "isolation_rule_2_restore_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger deaktiveres, inden medlemmer gendannes til gruppens målrettede tilstand."
+            }
+          },
+          "isolation_rule_3_section": {
+            "name": "Medlemsisolation – Regel 3",
+            "description": "Valgfri tredje isolationsregel med uafhængig trigger og medlemsliste.",
+            "data": {
+              "isolation_rule_3_trigger": "Triggertype",
+              "isolation_rule_3_sensor": "Isolationssensor",
+              "isolation_rule_3_hvac_modes": "HVAC-tilstand trigger",
+              "isolation_rule_3_entities": "Enheder der skal isoleres",
+              "isolation_rule_3_activate_delay": "Aktiveringsforsinkelse (sekunder)",
+              "isolation_rule_3_restore_delay": "Gendannelsesforsinkelse (sekunder)"
+            },
+            "data_description": {
+              "isolation_rule_3_trigger": "Vælg hvad der aktiverer isolation: en binær sensor eller en bestemt HVAC-tilstand for gruppen.",
+              "isolation_rule_3_sensor": "(Sensor-trigger) Binær sensor der udløser isolation ved ON.",
+              "isolation_rule_3_hvac_modes": "(HVAC-tilstand trigger) Isolation aktiveres når gruppens målrettet tilstand er en af disse.",
+              "isolation_rule_3_entities": "Gruppemedlemmer der isoleres når triggeren er aktiv.",
+              "isolation_rule_3_activate_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger aktiveres, inden medlemmer isoleres.",
+              "isolation_rule_3_restore_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger deaktiveres, inden medlemmer gendannes til gruppens målrettede tilstand."
+            }
+          },
+          "isolation_rule_4_section": {
+            "name": "Medlemsisolation – Regel 4",
+            "description": "Valgfri fjerde isolationsregel med uafhængig trigger og medlemsliste.",
+            "data": {
+              "isolation_rule_4_trigger": "Triggertype",
+              "isolation_rule_4_sensor": "Isolationssensor",
+              "isolation_rule_4_hvac_modes": "HVAC-tilstand trigger",
+              "isolation_rule_4_entities": "Enheder der skal isoleres",
+              "isolation_rule_4_activate_delay": "Aktiveringsforsinkelse (sekunder)",
+              "isolation_rule_4_restore_delay": "Gendannelsesforsinkelse (sekunder)"
+            },
+            "data_description": {
+              "isolation_rule_4_trigger": "Vælg hvad der aktiverer isolation: en binær sensor eller en bestemt HVAC-tilstand for gruppen.",
+              "isolation_rule_4_sensor": "(Sensor-trigger) Binær sensor der udløser isolation ved ON.",
+              "isolation_rule_4_hvac_modes": "(HVAC-tilstand trigger) Isolation aktiveres når gruppens målrettet tilstand er en af disse.",
+              "isolation_rule_4_entities": "Gruppemedlemmer der isoleres når triggeren er aktiv.",
+              "isolation_rule_4_activate_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger aktiveres, inden medlemmer isoleres.",
+              "isolation_rule_4_restore_delay": "(Kun sensor-/HVAC-tilstand trigger) Ventetid efter trigger deaktiveres, inden medlemmer gendannes til gruppens målrettede tilstand."
             }
           },
           "member_template_section": {
@@ -236,6 +298,7 @@
               "debounce_delay": "Debounce Forsinkelse (sekunder)",
               "retry_attempts": "Genforsøg Forsøg",
               "retry_delay": "Genforsøg Forsinkelse (sekunder)",
+              "force_retry": "Tving gentagelse",
               "staggered_call_delay": "Forsinkelse mellem kommandoer (sekunder)",
               "grace_period": "Optimistisk UI-overgangsperiode (sekunder)",
               "expose_smart_sensors": "Udstil smarte sensorer",
@@ -246,6 +309,7 @@
               "debounce_delay": "Ventetid før afsendelse af kommandoer. Højere værdier forhindrer 'hurtige' kommandoer, når du skyder skyderne.",
               "retry_attempts": "Hvor mange gange en kommando skal gensendes, hvis en enhed ikke svarer. Sæt til 0 for at deaktivere.",
               "retry_delay": "Pause mellem genforsøg. At give enheder et øjeblik til at komme sig kan forbedre pålideligheden.",
+              "force_retry": "Sender altid kommandoer til alle medlemmer igen, selv hvis de allerede rapporterer måltilstanden.",
               "staggered_call_delay": "Ventetid mellem individuelle kommandoer til gruppemedlemmer. Fordeling af kommandoer forhindrer netværksbelastning i Zigbee/Matter-miljøer. Sæt til 0 for at deaktivere.",
               "grace_period": "Hvor længe gruppen viser den befalede værdi, inden den skifter til medlemsgennemsnittet. Forhindrer UI-flimmer, når langsomme enheder (Cloud-broer, Zigbee) ekko deres gamle tilstand. Sæt til 0 for at deaktivere.",
               "expose_smart_sensors": "Opretter ekstra sensorenheder for gruppens temperatur og fugtighed (nyttigt til grafer).",
@@ -266,6 +330,7 @@
       "master_refresh_notice": "Master-enhed tilføjet. Nye muligheder tilgængelige.",
       "master_options_notice": "Ny Master-enhed mulighed",
       "isolation_all_selected": "Mindst ét medlem skal forblive uden for isolation.",
+      "isolation_entity_overlap": "Hvert medlem kan kun forekomme i én isolationsregel.",
       "sensor_loop_protection": "Kan ikke bruge en Climate Group Helper-sensor som ekstern sensor — dette ville skabe en feedback-løkke."
     },
     "abort": {
@@ -390,6 +455,14 @@
       "options": {
         "ignore": "Ignorer",
         "off": "Sluk"
+      }
+    },
+    "isolation_rule_count": {
+      "options": {
+        "1": "1 regel",
+        "2": "2 regler",
+        "3": "3 regler",
+        "4": "4 regler"
       }
     },
     "isolation_trigger": {

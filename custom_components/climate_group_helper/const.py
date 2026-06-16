@@ -26,103 +26,106 @@ from homeassistant.components.climate import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, CONF_ENTITIES, CONF_NAME
 
-DOMAIN = "climate_group_helper"
 DEFAULT_NAME = "Climate Group"
+DOMAIN = "climate_group_helper"
 
 # Member & Modes
 CONF_ADVANCED_MODE = "advanced_mode"
-CONF_MASTER_ENTITY = "master_entity"
-CONF_HVAC_MODE_STRATEGY = "hvac_mode_strategy"
 CONF_FEATURE_STRATEGY = "feature_strategy"
+CONF_HVAC_MODE_STRATEGY = "hvac_mode_strategy"
+CONF_MASTER_ENTITY = "master_entity"
 CONF_UNION_OUT_OF_BOUNDS_ACTION = "union_out_of_bounds_action"
 CONF_UNION_UNSUPPORTED_HVAC_ACTION = "union_unsupported_hvac_action"
 
 # Temperature Settings
-CONF_TEMP_TARGET_AVG = "temp_target_avg"
-CONF_TEMP_TARGET_ROUND = "temp_target_round"
-CONF_TEMP_CURRENT_AVG = "temp_current_avg"
-CONF_TEMP_USE_MASTER = "temp_use_master"
-CONF_TEMP_SENSORS = "temp_sensors"
-CONF_TEMP_UPDATE_TARGETS = "temp_update_targets"
-CONF_TEMP_CALIBRATION_MODE = "temp_calibration_mode"
 CONF_CALIBRATION_HEARTBEAT = "calibration_heartbeat"
 CONF_CALIBRATION_IGNORE_OFF = "calibration_ignore_off"
 CONF_STAGGERED_CALL_DELAY = "staggered_call_delay"
+CONF_TEMP_CALIBRATION_MODE = "temp_calibration_mode"
+CONF_TEMP_CURRENT_AVG = "temp_current_avg"
+CONF_TEMP_SENSORS = "temp_sensors"
+CONF_TEMP_TARGET_AVG = "temp_target_avg"
+CONF_TEMP_TARGET_ROUND = "temp_target_round"
+CONF_TEMP_UPDATE_TARGETS = "temp_update_targets"
+CONF_TEMP_USE_MASTER = "temp_use_master"
 
 # Humidity Settings
+CONF_HUMIDITY_CURRENT_AVG = "humidity_current_avg"
+CONF_HUMIDITY_SENSORS = "humidity_sensors"
 CONF_HUMIDITY_TARGET_AVG = "humidity_target_avg"
 CONF_HUMIDITY_TARGET_ROUND = "humidity_target_round"
-CONF_HUMIDITY_CURRENT_AVG = "humidity_current_avg"
-CONF_HUMIDITY_USE_MASTER = "humidity_use_master"
-CONF_HUMIDITY_SENSORS = "humidity_sensors"
 CONF_HUMIDITY_UPDATE_TARGETS = "humidity_update_targets"
+CONF_HUMIDITY_USE_MASTER = "humidity_use_master"
 
 # Sync Mode
-CONF_SYNC_MODE = "sync_mode"
-CONF_SYNC_ATTRS = "sync_attributes"
 CONF_IGNORE_OFF_MEMBERS_SYNC = "ignore_off_members_sync"
+CONF_SYNC_ATTRS = "sync_attributes"
+CONF_SYNC_MODE = "sync_mode"
 
 # Window Control
-CONF_WINDOW_MODE = "window_mode"
-CONF_WINDOW_ADOPT_MANUAL_CHANGES = "window_adopt_manual_changes"
-CONF_WINDOW_ACTION = "window_action"
-CONF_WINDOW_TEMPERATURE = "window_temperature"
-CONF_ROOM_SENSOR = "room_sensor"
-CONF_ZONE_SENSOR = "zone_sensor"
-CONF_ROOM_OPEN_DELAY = "room_open_delay"
-CONF_ZONE_OPEN_DELAY = "zone_open_delay"
 CONF_CLOSE_DELAY = "close_delay"
+CONF_ROOM_OPEN_DELAY = "room_open_delay"
+CONF_ROOM_SENSOR = "room_sensor"
+CONF_WINDOW_ACTION = "window_action"
+CONF_WINDOW_ADOPT_MANUAL_CHANGES = "window_adopt_manual_changes"
+CONF_WINDOW_MODE = "window_mode"
+CONF_WINDOW_TEMPERATURE = "window_temperature"
+CONF_ZONE_OPEN_DELAY = "zone_open_delay"
+CONF_ZONE_SENSOR = "zone_sensor"
+DEFAULT_CLOSE_DELAY = 30
 DEFAULT_ROOM_OPEN_DELAY = 15
 DEFAULT_ZONE_OPEN_DELAY = 300
-DEFAULT_CLOSE_DELAY = 30
 
 # Presence Control
+CONF_PRESENCE_ACTION = "presence_action"
+CONF_PRESENCE_AWAY_DELAY = "presence_away_delay"
+CONF_PRESENCE_AWAY_OFFSET = "presence_away_offset"
+CONF_PRESENCE_AWAY_PRESET = "presence_away_preset"
+CONF_PRESENCE_AWAY_TEMPERATURE = "presence_away_temperature"
 CONF_PRESENCE_MODE = "presence_mode"
+CONF_PRESENCE_RETURN_DELAY = "presence_return_delay"
 CONF_PRESENCE_SENSOR = "presence_sensor"
 CONF_PRESENCE_ZONE = "presence_zone"
-CONF_PRESENCE_ACTION = "presence_action"
-CONF_PRESENCE_AWAY_OFFSET = "presence_away_offset"
-CONF_PRESENCE_AWAY_TEMPERATURE = "presence_away_temperature"
-CONF_PRESENCE_AWAY_PRESET = "presence_away_preset"
-CONF_PRESENCE_AWAY_DELAY = "presence_away_delay"
-CONF_PRESENCE_RETURN_DELAY = "presence_return_delay"
 DEFAULT_PRESENCE_AWAY_DELAY = 0
 DEFAULT_PRESENCE_RETURN_DELAY = 0
 
 # Member Offsets
-CONF_MEMBER_TEMP_OFFSETS = "member_temp_offsets"
 CONF_MEMBER_OFFSET_CORRECTION = "member_offset_correction"
+CONF_MEMBER_TEMP_OFFSETS = "member_temp_offsets"
 
 # Member Isolation
-CONF_ISOLATION_SENSOR = "isolation_sensor"
-CONF_ISOLATION_ENTITIES = "isolation_entities"
 CONF_ISOLATION_ACTIVATE_DELAY = "isolation_activate_delay"
+CONF_ISOLATION_ENTITIES = "isolation_entities"
 CONF_ISOLATION_RESTORE_DELAY = "isolation_restore_delay"
+CONF_ISOLATION_RULES = "isolation_rules"
+CONF_ISOLATION_RULES_COUNT = "isolation_rule_count"
+CONF_ISOLATION_SENSOR = "isolation_sensor"
 CONF_ISOLATION_TRIGGER = "isolation_trigger"
 CONF_ISOLATION_TRIGGER_HVAC_MODES = "isolation_trigger_hvac_modes"
 
 # Schedule Automation
-CONF_SCHEDULE_ENTITY = "schedule_entity"
-CONF_SCHEDULE_BYPASS_ENTITY = "schedule_bypass_entity"
-CONF_RESYNC_INTERVAL = "resync_interval"
-CONF_OVERRIDE_DURATION = "override_duration"
-CONF_PERSIST_CHANGES = "persist_changes"
-CONF_PERSIST_ACTIVE_SCHEDULE = "persist_active_schedule"
 CONF_IGNORE_OFF_MEMBERS_SCHEDULE = "ignore_off_members_schedule"
 CONF_IGNORE_OFF_MEMBERS_TEMPERATURE = "ignore_off_members_temperature"
+CONF_OVERRIDE_DURATION = "override_duration"
+CONF_PERSIST_ACTIVE_SCHEDULE = "persist_active_schedule"
+CONF_PERSIST_CHANGES = "persist_changes"
+CONF_RESYNC_INTERVAL = "resync_interval"
+CONF_SCHEDULE_BYPASS_ENTITY = "schedule_bypass_entity"
+CONF_SCHEDULE_ENTITY = "schedule_entity"
 
 # Advanced options
 CONF_DEBOUNCE_DELAY = "debounce_delay"
+CONF_EXPOSE_CONFIG = "expose_config"
+CONF_EXPOSE_MEMBER_ENTITIES = "expose_member_entities"
+CONF_EXPOSE_SMART_SENSORS = "expose_smart_sensors"
+CONF_FORCE_RETRY = "force_retry"
+CONF_GRACE_PERIOD = "grace_period"
+CONF_MIN_TEMP_OFF = "min_temp_off"
+CONF_RANGE_TEMPLATE_DEADBAND_ACTION = "range_template_deadband_action"
+CONF_RANGE_TEMPLATE_ENABLED = "range_template_enabled"
 CONF_RETRY_ATTEMPTS = "retry_attempts"
 CONF_RETRY_DELAY = "retry_delay"
-CONF_GRACE_PERIOD = "grace_period"
 DEFAULT_GRACE_PERIOD = 3.0
-CONF_MIN_TEMP_OFF = "min_temp_off"
-CONF_EXPOSE_SMART_SENSORS = "expose_smart_sensors"
-CONF_EXPOSE_MEMBER_ENTITIES = "expose_member_entities"
-CONF_EXPOSE_CONFIG = "expose_config"
-CONF_RANGE_TEMPLATE_ENABLED = "range_template_enabled"
-CONF_RANGE_TEMPLATE_DEADBAND_ACTION = "range_template_deadband_action"
 
 # UI options
 CONF_EXPAND_SECTIONS = "expand_sections"
@@ -295,7 +298,6 @@ IDENTITY_KEYS: frozenset[str] = frozenset({CONF_NAME})
 
 MEMBER_LIST_KEYS: frozenset[str] = frozenset({
     CONF_ENTITIES,
-    CONF_ISOLATION_ENTITIES,
     CONF_MASTER_ENTITY,
 })
 
@@ -308,7 +310,6 @@ ENTITY_SELECTOR_KEYS: frozenset[str] = frozenset({
     CONF_PRESENCE_ZONE,
     CONF_SCHEDULE_ENTITY,
     CONF_SCHEDULE_BYPASS_ENTITY,
-    CONF_ISOLATION_SENSOR,
     CONF_MEMBER_TEMP_OFFSETS,
 })
 

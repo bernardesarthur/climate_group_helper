@@ -146,6 +146,28 @@ class MemberTemplateManager:
         """Return the active RangeTemplate, or None when disabled."""
         return self._range_template
 
+    @staticmethod
+    def is_covered_state(state: State | RangeTemplateState | None) -> bool:
+        """Return True if `state` is a template-rendered (covered) member state.
+
+        A `RangeTemplateState` instance exists exactly when `apply_state()` wrapped
+        the member — i.e. template active AND member covered AND group in `heat_cool`.
+        Single source of truth for "is this member owned by the template", used by
+        the display aggregation, the SyncCallHandler enforcement exclusion, the sync
+        adoption exclusion, and the changeover trigger.
+        """
+        return isinstance(state, RangeTemplateState)
+
+    def display_mode(self, state: State | RangeTemplateState) -> str:
+        """Aggregation-facing hvac_mode for one member state.
+
+        Template-covered members are logically `heat_cool` regardless of their
+        current physical mode (heat/cool/deadband). Used by the group's hvac_mode
+        aggregation and assumed-state/temperature consumers — NOT by the sync path,
+        which must keep seeing physical deviations (see RangeTemplateState.state).
+        """
+        return HVACMode.HEAT_COOL if self.is_covered_state(state) else state.state
+
     # ------------------------------------------------------------------
     # Input gateway
     # ------------------------------------------------------------------

@@ -41,6 +41,7 @@ _TRUSTED_CONTEXT_IDS = frozenset(
         "switch_enforce",
         "override",
         "isolation",
+        "member_template",
     }
 )
 
@@ -137,7 +138,8 @@ class SyncModeHandler:
         if not own_echo:
             # MEMBER_OFF isolation trigger: runs before the DISABLED guard so it works
             # even when sync enforcement is off.
-            self._group.member_isolation_handler.check_member_off_isolation()
+            for handler in self._group.member_isolation_handlers:
+                handler.check_member_off_isolation()
 
             if not self._has_relevant_changes(event):
                 return
@@ -199,14 +201,23 @@ class SyncModeHandler:
         # LOCK enforcement below still runs to correct the member if needed.
         old_state = event.data.get("old_state")
         is_reconnect = old_state is not None and old_state.state in (STATE_UNAVAILABLE, STATE_UNKNOWN)
-        if self.sync_mode in (SyncMode.MIRROR, SyncMode.MIRROR_LOCK) and not is_reconnect:
+
+        # Member-Template ownership: covered members are owned by the Range Template.
+        # Their physical mode is implementation detail, NOT a user intention — never adopt
+        # it into target_state (would corrupt the heat_cool target and disable the template).
+        # Changeover/correction for these members is driven by the TemplateCallHandler.
+        is_covered = self._group.member_template_manager.is_covered_state(event.data.get("new_state"))
+
+        if self.sync_mode in (SyncMode.MIRROR, SyncMode.MIRROR_LOCK) and not is_reconnect and not is_covered:
             if filtered := {key: value for key, value in change_dict.items() if self.filter_state.to_dict().get(key)}:
                 filtered = self._reverse_offset_temperatures(change_entity_id, filtered)
                 self.state_manager.update(entity_id=change_entity_id, **filtered)
                 _LOGGER.debug("[%s] TargetState updated: %s", self._group.entity_id, self.target_state)
 
-        # 2. Lock mode: only accept "Last Man Standing" OFF (Partial Sync)
-        if self.sync_mode in (SyncMode.LOCK, SyncMode.MIRROR_LOCK):
+        # 2. Lock mode: only accept "Last Man Standing" OFF (Partial Sync).
+        # Covered members excluded — a physically-off template member in the deadband is
+        # logically heat_cool, not a group-off signal.
+        if self.sync_mode in (SyncMode.LOCK, SyncMode.MIRROR_LOCK) and not is_covered:
             if (
                 self._group.config.get(CONF_IGNORE_OFF_MEMBERS_SYNC)
                 and change_dict.get("hvac_mode") == HVACMode.OFF
@@ -221,7 +232,7 @@ class SyncModeHandler:
                 _LOGGER.debug("[%s] MASTER_LOCK enforcement skipped (master fallback active)", self._group.entity_id)
                 return
             master_id = self._group._master_entity_id
-            if master_id and change_entity_id == master_id:
+            if master_id and change_entity_id == master_id and not is_covered:
                 if filtered := {key: value for key, value in change_dict.items() if self.filter_state.to_dict().get(key)}:
                     filtered = self._reverse_offset_temperatures(change_entity_id, filtered)
                     self.state_manager.update(entity_id=change_entity_id, **filtered)

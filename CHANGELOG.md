@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0 - 2026-06-16
+
+### 🌟 New Features
+
+*   **Multiple Member Isolation Rules**: A group can now define up to 4 independent isolation rules instead of just one — e.g. isolating the AC when the group switches to `heat`, and the radiator when it switches to `cool`.
+
+### ✨ Improvements
+
+*   **Force Retry**: New option in Advanced Settings that disables the diff check before sending commands. When enabled, commands are always sent to all capable members regardless of their current reported state.
+
+*   **Range Template**: Improved reliability — the group's HVAC mode display is now more stable, and heating/cooling switchover works correctly regardless of the configured Sync Mode.
+
 ## 1.3.0 - 2026-06-07
 
 > [!WARNING]

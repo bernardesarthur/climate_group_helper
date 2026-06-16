@@ -36,6 +36,7 @@ from .const import (
     ATTR_OOB_MEMBERS,
     ATTR_PRESENCE_FALLBACK,
     ATTR_TOTAL_MEMBER_COUNT,
+    CONF_ISOLATION_RULES,
     CONF_ISOLATION_TRIGGER,
     CONF_PRESENCE_MODE,
     CONF_PRESENCE_SENSOR,
@@ -130,7 +131,10 @@ def build_extra_state_attributes(group: ClimateGroupHelper) -> dict[str, Any]:
         features.append("schedule")
     if group.advanced_mode and group.sync_mode_handler.sync_mode != SyncMode.DISABLED:
         features.append("sync")
-    if cfg.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED) != IsolationTrigger.DISABLED:
+    if any(
+        rule.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED) != IsolationTrigger.DISABLED
+        for rule in cfg.get(CONF_ISOLATION_RULES, [])
+    ):
         features.append("isolation")
     attrs[ATTR_ENABLED_FEATURES] = features
 

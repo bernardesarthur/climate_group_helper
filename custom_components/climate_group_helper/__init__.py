@@ -33,6 +33,8 @@ from .const import (
     CONF_ISOLATION_ACTIVATE_DELAY,
     CONF_ISOLATION_ENTITIES,
     CONF_ISOLATION_RESTORE_DELAY,
+    CONF_ISOLATION_RULES,
+    CONF_ISOLATION_RULES_COUNT,
     CONF_ISOLATION_SENSOR,
     CONF_ISOLATION_TRIGGER_HVAC_MODES,
     CONF_ISOLATION_TRIGGER,
@@ -55,6 +57,7 @@ from .const import (
     CONF_RESYNC_INTERVAL,
     CONF_RETRY_ATTEMPTS,
     CONF_RETRY_DELAY,
+    CONF_FORCE_RETRY,
     CONF_ROOM_OPEN_DELAY,
     CONF_ROOM_SENSOR,
     CONF_RANGE_TEMPLATE_ENABLED,
@@ -80,6 +83,7 @@ from .const import (
     CONF_ZONE_OPEN_DELAY,
     CONF_ZONE_SENSOR,
     DOMAIN,
+    IsolationTrigger,
 )
 
 # Valid configuration keys for migration whitelist
@@ -115,6 +119,7 @@ VALID_CONFIG_KEYS = {
     CONF_DEBOUNCE_DELAY,
     CONF_RETRY_ATTEMPTS,
     CONF_RETRY_DELAY,
+    CONF_FORCE_RETRY,
     CONF_STAGGERED_CALL_DELAY,
     CONF_GRACE_PERIOD,
     # Sync mode options
@@ -161,13 +166,10 @@ VALID_CONFIG_KEYS = {
     CONF_RANGE_TEMPLATE_ENABLED,
     CONF_RANGE_TEMPLATE_DEADBAND_ACTION,
 
-    # Member Isolation options
-    CONF_ISOLATION_SENSOR,
-    CONF_ISOLATION_ENTITIES,
-    CONF_ISOLATION_ACTIVATE_DELAY,
-    CONF_ISOLATION_RESTORE_DELAY,
-    CONF_ISOLATION_TRIGGER,
-    CONF_ISOLATION_TRIGGER_HVAC_MODES,
+    # Member Isolation options — flat isolation_* keys are migrated into
+    # CONF_ISOLATION_RULES (v11→v12) and intentionally excluded from the whitelist.
+    CONF_ISOLATION_RULES_COUNT,
+    CONF_ISOLATION_RULES,
     # Per-member temperature offsets
     CONF_MEMBER_TEMP_OFFSETS,
     CONF_MEMBER_OFFSET_CORRECTION,
@@ -217,8 +219,8 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         - Filter out invalid configuration keys
         - Restore defaults for valid keys not present
     """
-    if entry.version < 11:
-        _LOGGER.info("[%s] Migrating config entry from version %s to 11", entry.title, entry.version)
+    if entry.version < 12:
+        _LOGGER.info("[%s] Migrating config entry from version %s to 12", entry.title, entry.version)
 
         # Combine data + options (covers pre-v7 entries that still used entry.data)
         old_config = {**entry.data, **entry.options}
@@ -249,6 +251,26 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if "range_template_entities" in old_config:
             old_config[CONF_RANGE_TEMPLATE_ENABLED] = bool(old_config.pop("range_template_entities"))
 
+        # v11 → v12: flat isolation_* keys → CONF_ISOLATION_RULES list.
+        # Only convert if not already migrated (idempotent for entries already on v12+ shape).
+        if CONF_ISOLATION_RULES not in old_config:
+            trigger = old_config.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED)
+            if trigger != IsolationTrigger.DISABLED:
+                old_config[CONF_ISOLATION_RULES] = [{
+                    CONF_ISOLATION_TRIGGER: trigger,
+                    CONF_ISOLATION_ENTITIES: old_config.get(CONF_ISOLATION_ENTITIES, []),
+                    CONF_ISOLATION_TRIGGER_HVAC_MODES: old_config.get(CONF_ISOLATION_TRIGGER_HVAC_MODES, []),
+                    CONF_ISOLATION_SENSOR: old_config.get(CONF_ISOLATION_SENSOR),
+                    CONF_ISOLATION_ACTIVATE_DELAY: old_config.get(CONF_ISOLATION_ACTIVATE_DELAY, 0),
+                    CONF_ISOLATION_RESTORE_DELAY: old_config.get(CONF_ISOLATION_RESTORE_DELAY, 0),
+                }]
+            else:
+                old_config[CONF_ISOLATION_RULES] = []
+        # Drop the old flat keys (removed from VALID_CONFIG_KEYS) so they don't linger.
+        for key in (CONF_ISOLATION_TRIGGER, CONF_ISOLATION_ENTITIES, CONF_ISOLATION_TRIGGER_HVAC_MODES,
+                    CONF_ISOLATION_SENSOR, CONF_ISOLATION_ACTIVATE_DELAY, CONF_ISOLATION_RESTORE_DELAY):
+            old_config.pop(key, None)
+
         # Whitelist filter: discard all deprecated/renamed keys
         new_options = {key: value for key, value in old_config.items() if key in VALID_CONFIG_KEYS}
 
@@ -256,8 +278,8 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if CONF_EXPAND_SECTIONS not in new_options:
             new_options[CONF_EXPAND_SECTIONS] = False
 
-        hass.config_entries.async_update_entry(entry, data={}, options=new_options, version=11)
-        _LOGGER.info("[%s] Migration to v11 complete. %d valid keys preserved.", entry.title, len(new_options))
+        hass.config_entries.async_update_entry(entry, data={}, options=new_options, version=12)
+        _LOGGER.info("[%s] Migration to v12 complete. %d valid keys preserved.", entry.title, len(new_options))
 
     return True
 

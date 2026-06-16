@@ -201,20 +201,82 @@
             "name": "Izolacja członków",
             "description": "Tymczasowo izoluj określonych członków (np. grzejniki za zasłonami) gdy czujnik binarny jest aktywny.",
             "data": {
-              "isolation_trigger": "Typ wyzwalacza",
-              "isolation_sensor": "Czujnik izolacji",
-              "isolation_trigger_hvac_modes": "Wyzwalacz trybu HVAC",
-              "isolation_entities": "Encje do izolacji",
-              "isolation_activate_delay": "Opóźnienie aktywacji (sekundy)",
-              "isolation_restore_delay": "Opóźnienie przywracania (sekundy)"
+              "isolation_rule_count": "Liczba reguł",
+              "isolation_rule_1_trigger": "Typ wyzwalacza",
+              "isolation_rule_1_sensor": "Czujnik izolacji",
+              "isolation_rule_1_hvac_modes": "Wyzwalacz trybu HVAC",
+              "isolation_rule_1_entities": "Encje do izolacji",
+              "isolation_rule_1_activate_delay": "Opóźnienie aktywacji (sekundy)",
+              "isolation_rule_1_restore_delay": "Opóźnienie przywracania (sekundy)"
             },
             "data_description": {
-              "isolation_trigger": "Wybierz, co aktywuje izolację: czujnik binarny lub określony tryb HVAC grupy.",
-              "isolation_sensor": "(Opcjonalnie) Czujnik binarny wyzwalający izolację gdy ON.",
-              "isolation_trigger_hvac_modes": "(Wyzwalacz trybu HVAC) Izolacja aktywuje się, gdy docelowy tryb grupy jest jednym z tych trybów.",
-              "isolation_entities": "Członkowie grupy do izolacji gdy czujnik jest aktywny.",
-              "isolation_activate_delay": "(Tylko wyzwalacz czujnik / tryb HVAC) Czas oczekiwania po włączeniu czujnika przed izolacją członków.",
-              "isolation_restore_delay": "(Tylko wyzwalacz czujnik / tryb HVAC) Czas oczekiwania po wyłączeniu czujnika przed przywróceniem członków."
+              "isolation_rule_count": "Ile niezależnych reguł izolacji wyświetlać. Zapisz po zmianie, aby wyświetlić lub ukryć dodatkowe sloty reguł.",
+              "isolation_rule_1_trigger": "Wybierz, co aktywuje izolację: czujnik binarny lub określony tryb HVAC grupy.",
+              "isolation_rule_1_sensor": "(Wyzwalacz czujnika) Czujnik binarny wyzwalający izolację przy stanie ON.",
+              "isolation_rule_1_hvac_modes": "(Wyzwalacz trybu HVAC) Izolacja aktywuje się, gdy docelowy tryb grupy jest jednym z tych.",
+              "isolation_rule_1_entities": "Członkowie grupy, którzy zostaną odizolowani, gdy wyzwalacz jest aktywny.",
+              "isolation_rule_1_activate_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po aktywacji wyzwalacza przed izolacją członków.",
+              "isolation_rule_1_restore_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po dezaktywacji wyzwalacza przed przywróceniem członków do docelowego stanu grupy."
+            }
+          },
+          "isolation_rule_2_section": {
+            "name": "Izolacja członka – Reguła 2",
+            "description": "Opcjonalna druga reguła izolacji z niezależnym wyzwalaczem i listą członków.",
+            "data": {
+              "isolation_rule_2_trigger": "Typ wyzwalacza",
+              "isolation_rule_2_sensor": "Czujnik izolacji",
+              "isolation_rule_2_hvac_modes": "Wyzwalacz trybu HVAC",
+              "isolation_rule_2_entities": "Encje do izolacji",
+              "isolation_rule_2_activate_delay": "Opóźnienie aktywacji (sekundy)",
+              "isolation_rule_2_restore_delay": "Opóźnienie przywracania (sekundy)"
+            },
+            "data_description": {
+              "isolation_rule_2_trigger": "Wybierz, co aktywuje izolację: czujnik binarny lub określony tryb HVAC grupy.",
+              "isolation_rule_2_sensor": "(Wyzwalacz czujnika) Czujnik binarny wyzwalający izolację przy stanie ON.",
+              "isolation_rule_2_hvac_modes": "(Wyzwalacz trybu HVAC) Izolacja aktywuje się, gdy docelowy tryb grupy jest jednym z tych.",
+              "isolation_rule_2_entities": "Członkowie grupy, którzy zostaną odizolowani, gdy wyzwalacz jest aktywny.",
+              "isolation_rule_2_activate_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po aktywacji wyzwalacza przed izolacją członków.",
+              "isolation_rule_2_restore_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po dezaktywacji wyzwalacza przed przywróceniem członków do docelowego stanu grupy."
+            }
+          },
+          "isolation_rule_3_section": {
+            "name": "Izolacja członka – Reguła 3",
+            "description": "Opcjonalna trzecia reguła izolacji z niezależnym wyzwalaczem i listą członków.",
+            "data": {
+              "isolation_rule_3_trigger": "Typ wyzwalacza",
+              "isolation_rule_3_sensor": "Czujnik izolacji",
+              "isolation_rule_3_hvac_modes": "Wyzwalacz trybu HVAC",
+              "isolation_rule_3_entities": "Encje do izolacji",
+              "isolation_rule_3_activate_delay": "Opóźnienie aktywacji (sekundy)",
+              "isolation_rule_3_restore_delay": "Opóźnienie przywracania (sekundy)"
+            },
+            "data_description": {
+              "isolation_rule_3_trigger": "Wybierz, co aktywuje izolację: czujnik binarny lub określony tryb HVAC grupy.",
+              "isolation_rule_3_sensor": "(Wyzwalacz czujnika) Czujnik binarny wyzwalający izolację przy stanie ON.",
+              "isolation_rule_3_hvac_modes": "(Wyzwalacz trybu HVAC) Izolacja aktywuje się, gdy docelowy tryb grupy jest jednym z tych.",
+              "isolation_rule_3_entities": "Członkowie grupy, którzy zostaną odizolowani, gdy wyzwalacz jest aktywny.",
+              "isolation_rule_3_activate_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po aktywacji wyzwalacza przed izolacją członków.",
+              "isolation_rule_3_restore_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po dezaktywacji wyzwalacza przed przywróceniem członków do docelowego stanu grupy."
+            }
+          },
+          "isolation_rule_4_section": {
+            "name": "Izolacja członka – Reguła 4",
+            "description": "Opcjonalna czwarta reguła izolacji z niezależnym wyzwalaczem i listą członków.",
+            "data": {
+              "isolation_rule_4_trigger": "Typ wyzwalacza",
+              "isolation_rule_4_sensor": "Czujnik izolacji",
+              "isolation_rule_4_hvac_modes": "Wyzwalacz trybu HVAC",
+              "isolation_rule_4_entities": "Encje do izolacji",
+              "isolation_rule_4_activate_delay": "Opóźnienie aktywacji (sekundy)",
+              "isolation_rule_4_restore_delay": "Opóźnienie przywracania (sekundy)"
+            },
+            "data_description": {
+              "isolation_rule_4_trigger": "Wybierz, co aktywuje izolację: czujnik binarny lub określony tryb HVAC grupy.",
+              "isolation_rule_4_sensor": "(Wyzwalacz czujnika) Czujnik binarny wyzwalający izolację przy stanie ON.",
+              "isolation_rule_4_hvac_modes": "(Wyzwalacz trybu HVAC) Izolacja aktywuje się, gdy docelowy tryb grupy jest jednym z tych.",
+              "isolation_rule_4_entities": "Członkowie grupy, którzy zostaną odizolowani, gdy wyzwalacz jest aktywny.",
+              "isolation_rule_4_activate_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po aktywacji wyzwalacza przed izolacją członków.",
+              "isolation_rule_4_restore_delay": "(Tylko wyzwalacz czujnika/trybu HVAC) Czas oczekiwania po dezaktywacji wyzwalacza przed przywróceniem członków do docelowego stanu grupy."
             }
           },
           "member_template_section": {
@@ -236,6 +298,7 @@
               "debounce_delay": "Opóźnienie Debounce (sekundy)",
               "retry_attempts": "Próby Ponowienia",
               "retry_delay": "Opóźnienie Ponowienia (sekundy)",
+              "force_retry": "Wymuś ponowną próbę",
               "staggered_call_delay": "Opóźnienie między poleceniami (sekundy)",
               "grace_period": "Optymistyczny okres przejścia UI (sekundy)",
               "expose_smart_sensors": "Pokaż Inteligentne Czujniki",
@@ -246,6 +309,7 @@
               "debounce_delay": "Czas oczekiwania przed wysłaniem poleceń. Wyższe wartości zapobiegają poleceniom typu 'szybki ogień' podczas przesuwania suwaków.",
               "retry_attempts": "Ile razy ponownie wysłać polecenie, jeśli urządzenie nie odpowiada. Ustaw na 0, aby wyłączyć.",
               "retry_delay": "Pauza między próbami. Danie urządzeniom chwili na odzyskanie sprawności może poprawić niezawodność.",
+              "force_retry": "Zawsze ponawia wysyłanie poleceń do wszystkich członków, nawet jeśli już raportują stan docelowy.",
               "staggered_call_delay": "Czas oczekiwania między poszczególnymi poleceniami do członków grupy. Rozłożenie poleceń zapobiega przeciążeniu sieci w środowiskach Zigbee/Matter. Ustaw na 0, aby wyłączyć.",
               "grace_period": "Jak długo grupa wyświetla wysłaną wartość przed przełączeniem na średnią członków. Zapobiega migotaniu UI, gdy wolne urządzenia (mosty Cloud, Zigbee) odsyłają swój stary stan. Ustaw na 0, aby wyłączyć.",
               "expose_smart_sensors": "Tworzy dodatkowe encje czujników dla temperatury i wilgotności grupy (przydatne do wykresów).",
@@ -266,6 +330,7 @@
       "master_refresh_notice": "Dodano encję nadrzędną (Master). Dostępne nowe opcje.",
       "master_options_notice": "Nowa opcja encji nadrzędnej",
       "isolation_all_selected": "Co najmniej jeden członek musi pozostać poza izolacją.",
+      "isolation_entity_overlap": "Każdy członek może znajdować się tylko w jednej regule izolacji.",
       "sensor_loop_protection": "Nie można używać czujnika Climate Group Helper jako czujnika zewnętrznego — spowodowałoby to pętlę sprzężenia zwrotnego."
     },
     "abort": {
@@ -390,6 +455,14 @@
       "options": {
         "ignore": "Ignoruj",
         "off": "Wyłącz"
+      }
+    },
+    "isolation_rule_count": {
+      "options": {
+        "1": "1 reguła",
+        "2": "2 reguły",
+        "3": "3 reguły",
+        "4": "4 reguły"
       }
     },
     "isolation_trigger": {

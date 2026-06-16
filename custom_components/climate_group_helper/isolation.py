@@ -52,19 +52,23 @@ class MemberIsolationHandler:
       3. Syncs each entity back to the current target_state (unless globally blocked).
     """
 
-    def __init__(self, group: ClimateGroupHelper) -> None:
-        """Initialize the member isolation handler."""
+    def __init__(self, group: ClimateGroupHelper, rule: dict[str, Any]) -> None:
+        """Initialize the member isolation handler from a single rule dict.
+
+        The advanced_mode guard lives in climate.py — the handler list is only
+        populated when advanced mode is on, so each rule is always active here.
+        """
         self._group = group
         self._hass = group.hass
 
         self._trigger: IsolationTrigger = IsolationTrigger(
-            group.config.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED)
-        ) if self._group.advanced_mode else IsolationTrigger.DISABLED
-        self._sensor_id: str | None = group.config.get(CONF_ISOLATION_SENSOR) if self._group.advanced_mode else None
-        self._trigger_hvac_modes: list[str] = group.config.get(CONF_ISOLATION_TRIGGER_HVAC_MODES, [])
-        self._isolation_entity_ids: list[str] = group.config.get(CONF_ISOLATION_ENTITIES, [])
-        self._activate_delay: float = group.config.get(CONF_ISOLATION_ACTIVATE_DELAY, 0) if self._group.advanced_mode else 0
-        self._restore_delay: float = group.config.get(CONF_ISOLATION_RESTORE_DELAY, 0) if self._group.advanced_mode else 0
+            rule.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED)
+        )
+        self._sensor_id: str | None = rule.get(CONF_ISOLATION_SENSOR)
+        self._trigger_hvac_modes: list[str] = rule.get(CONF_ISOLATION_TRIGGER_HVAC_MODES, [])
+        self._isolation_entity_ids: list[str] = rule.get(CONF_ISOLATION_ENTITIES, [])
+        self._activate_delay: float = rule.get(CONF_ISOLATION_ACTIVATE_DELAY, 0)
+        self._restore_delay: float = rule.get(CONF_ISOLATION_RESTORE_DELAY, 0)
 
         self._unsub_listener: Callable[[], None] | None = None
         self._pending_timer: Callable[[], None] | None = None
@@ -266,11 +270,10 @@ class MemberIsolationHandler:
         if old_hvac_mode in (STATE_UNAVAILABLE, STATE_UNKNOWN) and new_hvac_mode != HVACMode.OFF:
             return
 
-        trigger = self._group.config.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED)
-        if trigger != IsolationTrigger.MEMBER_OFF:
+        if self._trigger != IsolationTrigger.MEMBER_OFF:
             return
 
-        watch_list = self._group.config.get(CONF_ISOLATION_ENTITIES, [])
+        watch_list = self._isolation_entity_ids
         if watch_list and entity_id not in watch_list:
             return
 

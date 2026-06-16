@@ -285,9 +285,10 @@ class BaseStateManager:
         self._group.shared_target_state = self._group.shared_target_state.update(**kwargs)
         _LOGGER.debug("[%s] TargetState updated (source=%s): %s", self._group.entity_id, kwargs["last_source"], kwargs)
 
-        # Notify isolation handler if hvac_mode changed (for HVAC_MODE trigger)
+        # Notify isolation handlers if hvac_mode changed (for HVAC_MODE trigger)
         if "hvac_mode" in kwargs:
-            self._group.member_isolation_handler.on_target_hvac_mode_changed(kwargs["hvac_mode"])
+            for handler in self._group.member_isolation_handlers:
+                handler.on_target_hvac_mode_changed(kwargs["hvac_mode"])
 
         return True
 

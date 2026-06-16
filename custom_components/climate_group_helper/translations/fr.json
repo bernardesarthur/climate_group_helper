@@ -201,20 +201,82 @@
             "name": "Isolation de membres",
             "description": "Isoler temporairement des membres spécifiques (ex: radiateurs derrière des rideaux) lorsqu'un capteur binaire est actif.",
             "data": {
-              "isolation_trigger": "Type de déclencheur",
-              "isolation_sensor": "Capteur d'isolation",
-              "isolation_trigger_hvac_modes": "Déclencheur par mode HVAC",
-              "isolation_entities": "Entités à isoler",
-              "isolation_activate_delay": "Délai d'activation (secondes)",
-              "isolation_restore_delay": "Délai de restauration (secondes)"
+              "isolation_rule_count": "Nombre de règles",
+              "isolation_rule_1_trigger": "Type de déclencheur",
+              "isolation_rule_1_sensor": "Capteur d'isolation",
+              "isolation_rule_1_hvac_modes": "Déclencheur mode HVAC",
+              "isolation_rule_1_entities": "Entités à isoler",
+              "isolation_rule_1_activate_delay": "Délai d'activation (secondes)",
+              "isolation_rule_1_restore_delay": "Délai de restauration (secondes)"
             },
             "data_description": {
-              "isolation_trigger": "Choisissez ce qui active l'isolation : un capteur binaire ou un mode HVAC spécifique du groupe.",
-              "isolation_sensor": "(Optionnel) Capteur binaire qui déclenche l'isolation lorsqu'il est ON.",
-              "isolation_trigger_hvac_modes": "(Déclencheur par mode HVAC) L'isolation s'active lorsque le mode cible du groupe correspond à l'un de ces modes.",
-              "isolation_entities": "Membres du groupe à isoler quand le capteur est actif.",
-              "isolation_activate_delay": "(Déclencheur capteur / mode HVAC uniquement) Temps d'attente après l'activation du capteur avant d'isoler les membres.",
-              "isolation_restore_delay": "(Déclencheur capteur / mode HVAC uniquement) Temps d'attente après la désactivation avant de restaurer les membres."
+              "isolation_rule_count": "Combien de règles d'isolation indépendantes afficher. Enregistrer après modification pour afficher ou masquer des créneaux supplémentaires.",
+              "isolation_rule_1_trigger": "Choisir ce qui active l'isolation : un capteur binaire ou un mode HVAC spécifique du groupe.",
+              "isolation_rule_1_sensor": "(Déclencheur capteur) Capteur binaire qui déclenche l'isolation lorsqu'il est ON.",
+              "isolation_rule_1_hvac_modes": "(Déclencheur mode HVAC) L'isolation s'active quand le mode cible du groupe est l'un de ceux-ci.",
+              "isolation_rule_1_entities": "Membres du groupe à isoler lorsque le déclencheur est actif.",
+              "isolation_rule_1_activate_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après l'activation du déclencheur avant d'isoler les membres.",
+              "isolation_rule_1_restore_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après la désactivation du déclencheur avant de restaurer les membres à l'état cible du groupe."
+            }
+          },
+          "isolation_rule_2_section": {
+            "name": "Isolation de membre – Règle 2",
+            "description": "Deuxième règle d'isolation optionnelle avec déclencheur et liste de membres indépendants.",
+            "data": {
+              "isolation_rule_2_trigger": "Type de déclencheur",
+              "isolation_rule_2_sensor": "Capteur d'isolation",
+              "isolation_rule_2_hvac_modes": "Déclencheur mode HVAC",
+              "isolation_rule_2_entities": "Entités à isoler",
+              "isolation_rule_2_activate_delay": "Délai d'activation (secondes)",
+              "isolation_rule_2_restore_delay": "Délai de restauration (secondes)"
+            },
+            "data_description": {
+              "isolation_rule_2_trigger": "Choisir ce qui active l'isolation : un capteur binaire ou un mode HVAC spécifique du groupe.",
+              "isolation_rule_2_sensor": "(Déclencheur capteur) Capteur binaire qui déclenche l'isolation lorsqu'il est ON.",
+              "isolation_rule_2_hvac_modes": "(Déclencheur mode HVAC) L'isolation s'active quand le mode cible du groupe est l'un de ceux-ci.",
+              "isolation_rule_2_entities": "Membres du groupe à isoler lorsque le déclencheur est actif.",
+              "isolation_rule_2_activate_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après l'activation du déclencheur avant d'isoler les membres.",
+              "isolation_rule_2_restore_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après la désactivation du déclencheur avant de restaurer les membres à l'état cible du groupe."
+            }
+          },
+          "isolation_rule_3_section": {
+            "name": "Isolation de membre – Règle 3",
+            "description": "Troisième règle d'isolation optionnelle avec déclencheur et liste de membres indépendants.",
+            "data": {
+              "isolation_rule_3_trigger": "Type de déclencheur",
+              "isolation_rule_3_sensor": "Capteur d'isolation",
+              "isolation_rule_3_hvac_modes": "Déclencheur mode HVAC",
+              "isolation_rule_3_entities": "Entités à isoler",
+              "isolation_rule_3_activate_delay": "Délai d'activation (secondes)",
+              "isolation_rule_3_restore_delay": "Délai de restauration (secondes)"
+            },
+            "data_description": {
+              "isolation_rule_3_trigger": "Choisir ce qui active l'isolation : un capteur binaire ou un mode HVAC spécifique du groupe.",
+              "isolation_rule_3_sensor": "(Déclencheur capteur) Capteur binaire qui déclenche l'isolation lorsqu'il est ON.",
+              "isolation_rule_3_hvac_modes": "(Déclencheur mode HVAC) L'isolation s'active quand le mode cible du groupe est l'un de ceux-ci.",
+              "isolation_rule_3_entities": "Membres du groupe à isoler lorsque le déclencheur est actif.",
+              "isolation_rule_3_activate_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après l'activation du déclencheur avant d'isoler les membres.",
+              "isolation_rule_3_restore_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après la désactivation du déclencheur avant de restaurer les membres à l'état cible du groupe."
+            }
+          },
+          "isolation_rule_4_section": {
+            "name": "Isolation de membre – Règle 4",
+            "description": "Quatrième règle d'isolation optionnelle avec déclencheur et liste de membres indépendants.",
+            "data": {
+              "isolation_rule_4_trigger": "Type de déclencheur",
+              "isolation_rule_4_sensor": "Capteur d'isolation",
+              "isolation_rule_4_hvac_modes": "Déclencheur mode HVAC",
+              "isolation_rule_4_entities": "Entités à isoler",
+              "isolation_rule_4_activate_delay": "Délai d'activation (secondes)",
+              "isolation_rule_4_restore_delay": "Délai de restauration (secondes)"
+            },
+            "data_description": {
+              "isolation_rule_4_trigger": "Choisir ce qui active l'isolation : un capteur binaire ou un mode HVAC spécifique du groupe.",
+              "isolation_rule_4_sensor": "(Déclencheur capteur) Capteur binaire qui déclenche l'isolation lorsqu'il est ON.",
+              "isolation_rule_4_hvac_modes": "(Déclencheur mode HVAC) L'isolation s'active quand le mode cible du groupe est l'un de ceux-ci.",
+              "isolation_rule_4_entities": "Membres du groupe à isoler lorsque le déclencheur est actif.",
+              "isolation_rule_4_activate_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après l'activation du déclencheur avant d'isoler les membres.",
+              "isolation_rule_4_restore_delay": "(Déclencheur capteur/mode HVAC uniquement) Temps d'attente après la désactivation du déclencheur avant de restaurer les membres à l'état cible du groupe."
             }
           },
           "member_template_section": {
@@ -236,6 +298,7 @@
               "debounce_delay": "Délai d'Anti-rebond (secondes)",
               "retry_attempts": "Tentatives de Réessai",
               "retry_delay": "Délai de Réessai (secondes)",
+              "force_retry": "Forcer la relance",
               "staggered_call_delay": "Délai entre les commandes (secondes)",
               "grace_period": "Période de grâce UI optimiste (secondes)",
               "expose_smart_sensors": "Exposer des capteurs intelligents",
@@ -246,6 +309,7 @@
               "debounce_delay": "Temps d'attente avant l'envoi des commandes. Des valeurs plus élevées empêchent les commandes en 'rafale' lors du glissement des curseurs.",
               "retry_attempts": "Combien de fois renvoyer une commande si un appareil ne répond pas. Mettre à 0 pour désactiver.",
               "retry_delay": "Pause entre les tentatives de réessai. Donner un moment aux appareils pour récupérer peut améliorer la fiabilité.",
+              "force_retry": "Renvoie toujours les commandes à tous les membres, même s'ils signalent déjà l'état cible.",
               "staggered_call_delay": "Temps d'attente entre les commandes individuelles aux membres du groupe. L'échelonnement des commandes évite la congestion réseau dans les environnements Zigbee/Matter. Mettre à 0 pour désactiver.",
               "grace_period": "Durée pendant laquelle le groupe affiche la valeur envoyée avant de revenir à la moyenne des membres. Évite le scintillement de l'UI lorsque des appareils lents (ponts Cloud, Zigbee) renvoient leur ancien état. Mettre à 0 pour désactiver.",
               "expose_smart_sensors": "Crée des entités de capteur supplémentaires pour la température et l'humidité du groupe (utile pour les graphiques).",
@@ -266,6 +330,7 @@
       "master_refresh_notice": "Entité Maître ajoutée. Nouvelles options disponibles.",
       "master_options_notice": "Nouvelle option d'entité Maître",
       "isolation_all_selected": "Au moins un membre doit rester en dehors de l'isolation.",
+      "isolation_entity_overlap": "Chaque membre ne peut apparaître que dans une seule règle d'isolation.",
       "sensor_loop_protection": "Impossible d'utiliser un capteur Climate Group Helper comme capteur externe — cela créerait une boucle de rétroaction."
     },
     "abort": {
@@ -390,6 +455,14 @@
       "options": {
         "ignore": "Ignorer",
         "off": "Éteindre"
+      }
+    },
+    "isolation_rule_count": {
+      "options": {
+        "1": "1 règle",
+        "2": "2 règles",
+        "3": "3 règles",
+        "4": "4 règles"
       }
     },
     "isolation_trigger": {

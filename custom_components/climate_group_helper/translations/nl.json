@@ -201,20 +201,82 @@
             "name": "Ledenisolatie",
             "description": "Isoleer specifieke leden tijdelijk (bijv. radiatoren achter gordijnen) wanneer een binaire sensor actief is.",
             "data": {
-              "isolation_trigger": "Triggertype",
-              "isolation_sensor": "Isolatiesensor",
-              "isolation_trigger_hvac_modes": "HVAC-stand trigger",
-              "isolation_entities": "Te isoleren entiteiten",
-              "isolation_activate_delay": "Activeringsvertraging (seconden)",
-              "isolation_restore_delay": "Herstelvertraging (seconden)"
+              "isolation_rule_count": "Aantal regels",
+              "isolation_rule_1_trigger": "Triggertype",
+              "isolation_rule_1_sensor": "Isolatiesensor",
+              "isolation_rule_1_hvac_modes": "HVAC-modus trigger",
+              "isolation_rule_1_entities": "Te isoleren entiteiten",
+              "isolation_rule_1_activate_delay": "Activeringsvertraging (seconden)",
+              "isolation_rule_1_restore_delay": "Herstelvertraging (seconden)"
             },
             "data_description": {
-              "isolation_trigger": "Kies wat de isolatie activeert: een binaire sensor of een specifieke HVAC-stand van de groep.",
-              "isolation_sensor": "(Optioneel) Binaire sensor die isolatie activeert wanneer ON.",
-              "isolation_trigger_hvac_modes": "(HVAC-stand trigger) Isolatie wordt geactiveerd wanneer de doelstand van de groep overeenkomt met een van deze standen.",
-              "isolation_entities": "Groepsleden om te isoleren wanneer de sensor actief is.",
-              "isolation_activate_delay": "(Alleen sensor- / HVAC-modus trigger) Wachttijd na sensor ON voordat leden worden geïsoleerd.",
-              "isolation_restore_delay": "(Alleen sensor- / HVAC-modus trigger) Wachttijd na sensor OFF voordat leden worden hersteld."
+              "isolation_rule_count": "Hoeveel onafhankelijke isolatieregels te tonen. Opslaan na wijziging om extra regelslots te tonen of te verbergen.",
+              "isolation_rule_1_trigger": "Kies wat de isolatie activeert: een binaire sensor of een specifieke HVAC-modus van de groep.",
+              "isolation_rule_1_sensor": "(Sensortrigger) Binaire sensor die isolatie activeert bij ON.",
+              "isolation_rule_1_hvac_modes": "(HVAC-modus trigger) Isolatie activeert wanneer de doelmodus van de groep een van deze is.",
+              "isolation_rule_1_entities": "Groepsleden die worden geïsoleerd wanneer de trigger actief is.",
+              "isolation_rule_1_activate_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger activeert voordat leden worden geïsoleerd.",
+              "isolation_rule_1_restore_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger deactiveert voordat leden worden hersteld naar de doelstatus van de groep."
+            }
+          },
+          "isolation_rule_2_section": {
+            "name": "Ledenisolatie – Regel 2",
+            "description": "Optionele tweede isolatieregel met onafhankelijke trigger en ledenlijst.",
+            "data": {
+              "isolation_rule_2_trigger": "Triggertype",
+              "isolation_rule_2_sensor": "Isolatiesensor",
+              "isolation_rule_2_hvac_modes": "HVAC-modus trigger",
+              "isolation_rule_2_entities": "Te isoleren entiteiten",
+              "isolation_rule_2_activate_delay": "Activeringsvertraging (seconden)",
+              "isolation_rule_2_restore_delay": "Herstelvertraging (seconden)"
+            },
+            "data_description": {
+              "isolation_rule_2_trigger": "Kies wat de isolatie activeert: een binaire sensor of een specifieke HVAC-modus van de groep.",
+              "isolation_rule_2_sensor": "(Sensortrigger) Binaire sensor die isolatie activeert bij ON.",
+              "isolation_rule_2_hvac_modes": "(HVAC-modus trigger) Isolatie activeert wanneer de doelmodus van de groep een van deze is.",
+              "isolation_rule_2_entities": "Groepsleden die worden geïsoleerd wanneer de trigger actief is.",
+              "isolation_rule_2_activate_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger activeert voordat leden worden geïsoleerd.",
+              "isolation_rule_2_restore_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger deactiveert voordat leden worden hersteld naar de doelstatus van de groep."
+            }
+          },
+          "isolation_rule_3_section": {
+            "name": "Ledenisolatie – Regel 3",
+            "description": "Optionele derde isolatieregel met onafhankelijke trigger en ledenlijst.",
+            "data": {
+              "isolation_rule_3_trigger": "Triggertype",
+              "isolation_rule_3_sensor": "Isolatiesensor",
+              "isolation_rule_3_hvac_modes": "HVAC-modus trigger",
+              "isolation_rule_3_entities": "Te isoleren entiteiten",
+              "isolation_rule_3_activate_delay": "Activeringsvertraging (seconden)",
+              "isolation_rule_3_restore_delay": "Herstelvertraging (seconden)"
+            },
+            "data_description": {
+              "isolation_rule_3_trigger": "Kies wat de isolatie activeert: een binaire sensor of een specifieke HVAC-modus van de groep.",
+              "isolation_rule_3_sensor": "(Sensortrigger) Binaire sensor die isolatie activeert bij ON.",
+              "isolation_rule_3_hvac_modes": "(HVAC-modus trigger) Isolatie activeert wanneer de doelmodus van de groep een van deze is.",
+              "isolation_rule_3_entities": "Groepsleden die worden geïsoleerd wanneer de trigger actief is.",
+              "isolation_rule_3_activate_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger activeert voordat leden worden geïsoleerd.",
+              "isolation_rule_3_restore_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger deactiveert voordat leden worden hersteld naar de doelstatus van de groep."
+            }
+          },
+          "isolation_rule_4_section": {
+            "name": "Ledenisolatie – Regel 4",
+            "description": "Optionele vierde isolatieregel met onafhankelijke trigger en ledenlijst.",
+            "data": {
+              "isolation_rule_4_trigger": "Triggertype",
+              "isolation_rule_4_sensor": "Isolatiesensor",
+              "isolation_rule_4_hvac_modes": "HVAC-modus trigger",
+              "isolation_rule_4_entities": "Te isoleren entiteiten",
+              "isolation_rule_4_activate_delay": "Activeringsvertraging (seconden)",
+              "isolation_rule_4_restore_delay": "Herstelvertraging (seconden)"
+            },
+            "data_description": {
+              "isolation_rule_4_trigger": "Kies wat de isolatie activeert: een binaire sensor of een specifieke HVAC-modus van de groep.",
+              "isolation_rule_4_sensor": "(Sensortrigger) Binaire sensor die isolatie activeert bij ON.",
+              "isolation_rule_4_hvac_modes": "(HVAC-modus trigger) Isolatie activeert wanneer de doelmodus van de groep een van deze is.",
+              "isolation_rule_4_entities": "Groepsleden die worden geïsoleerd wanneer de trigger actief is.",
+              "isolation_rule_4_activate_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger activeert voordat leden worden geïsoleerd.",
+              "isolation_rule_4_restore_delay": "(Alleen sensor-/HVAC-modus trigger) Wachttijd nadat de trigger deactiveert voordat leden worden hersteld naar de doelstatus van de groep."
             }
           },
           "member_template_section": {
@@ -236,6 +298,7 @@
               "debounce_delay": "Debounce Vertraging (seconden)",
               "retry_attempts": "Herhaalpogingen",
               "retry_delay": "Herhaalvertraging (seconden)",
+              "force_retry": "Opnieuw proberen afdwingen",
               "staggered_call_delay": "Vertraging tussen opdrachten (seconden)",
               "grace_period": "Optimistische UI-overgangsperiode (seconden)",
               "expose_smart_sensors": "Slimme sensoren weergeven",
@@ -246,6 +309,7 @@
               "debounce_delay": "Wachttijd voor het verzenden van opdrachten. Hogere waarden voorkomen 'snelvuur'-opdrachten bij het schuiven van regelaars.",
               "retry_attempts": "Hoe vaak een commando opnieuw verzenden als een apparaat niet reageert. Zet op 0 om uit te schakelen.",
               "retry_delay": "Pauze tussen herhaalpogingen. Apparaten een moment geven om te herstellen kan de betrouwbaarheid verbeteren.",
+              "force_retry": "Stuurt altijd opnieuw opdrachten naar alle leden, ook als ze de doeltoestand al melden.",
               "staggered_call_delay": "Wachttijd tussen afzonderlijke opdrachten aan groepsleden. Gespreide opdrachten voorkomen netwerkcongestie in Zigbee/Matter-omgevingen. Stel in op 0 om te deactiveren.",
               "grace_period": "Hoe lang de groep de verzonden waarde toont voordat wordt overgeschakeld naar het ledengemiddelde. Voorkomt UI-flikkering wanneer trage apparaten (Cloud-bridges, Zigbee) hun oude toestand terugsturen. Stel in op 0 om te deactiveren.",
               "expose_smart_sensors": "Maakt extra sensorentiteiten voor de temperatuur en vochtigheid van de groep (handig voor grafieken).",
@@ -266,6 +330,7 @@
       "master_refresh_notice": "Master-entiteit toegevoegd. Nieuwe opties beschikbaar.",
       "master_options_notice": "Nieuwe Master-entiteit optie",
       "isolation_all_selected": "Ten minste één lid moet buiten de isolatie blijven.",
+      "isolation_entity_overlap": "Elk lid mag slechts in één isolatieregel voorkomen.",
       "sensor_loop_protection": "Een Climate Group Helper-sensor kan niet als externe sensor worden gebruikt — dit zou een feedbacklus veroorzaken."
     },
     "abort": {
@@ -390,6 +455,14 @@
       "options": {
         "ignore": "Negeren",
         "off": "Uitschakelen"
+      }
+    },
+    "isolation_rule_count": {
+      "options": {
+        "1": "1 regel",
+        "2": "2 regels",
+        "3": "3 regels",
+        "4": "4 regels"
       }
     },
     "isolation_trigger": {

@@ -201,20 +201,82 @@
             "name": "Mitglieds-Isolierung",
             "description": "Bestimmte Mitglieder (z.B. Heizkörper hinter Vorhängen) temporär isolieren, wenn ein Binärsensor aktiv ist. Isolierte Mitglieder werden ausgeschaltet und aus Gruppenberechnungen ausgeschlossen.",
             "data": {
-              "isolation_trigger": "Auslösertyp",
-              "isolation_sensor": "Isolierungs-Sensor",
-              "isolation_trigger_hvac_modes": "HVAC-Modus-Auslöser",
-              "isolation_entities": "Zu isolierende Geräte",
-              "isolation_activate_delay": "Aktivierungs-Verzögerung (Sekunden)",
-              "isolation_restore_delay": "Wiederherstell-Verzögerung (Sekunden)"
+              "isolation_rule_count": "Anzahl der Regeln",
+              "isolation_rule_1_trigger": "Trigger-Typ",
+              "isolation_rule_1_sensor": "Isolationssensor",
+              "isolation_rule_1_hvac_modes": "HVAC-Modus-Trigger",
+              "isolation_rule_1_entities": "Zu isolierende Entitäten",
+              "isolation_rule_1_activate_delay": "Aktivierungsverzögerung (Sekunden)",
+              "isolation_rule_1_restore_delay": "Wiederherstellungsverzögerung (Sekunden)"
             },
             "data_description": {
-              "isolation_trigger": "Wähle aus, was die Isolierung aktiviert: ein binärer Sensor oder ein bestimmter HVAC-Modus der Gruppe.",
-              "isolation_sensor": "(Optional) Binärsensor, der die Isolierung bei ON auslöst.",
-              "isolation_trigger_hvac_modes": "(HVAC-Modus-Auslöser) Die Isolierung wird aktiviert, wenn der Zielmodus der Gruppe einem dieser Modi entspricht.",
-              "isolation_entities": "Gruppenmitglieder, die beim aktiven Sensor isoliert werden.",
-              "isolation_activate_delay": "(Nur Sensor- / HVAC-Modus-Auslöser) Wartezeit nach Sensor ON, bevor Mitglieder isoliert werden.",
-              "isolation_restore_delay": "(Nur Sensor- / HVAC-Modus-Auslöser) Wartezeit nach Sensor OFF, bevor Mitglieder synchronisiert werden."
+              "isolation_rule_count": "Wie viele unabhängige Isolationsregeln angezeigt werden. Nach einer Änderung speichern, um zusätzliche Regel-Slots ein- oder auszublenden.",
+              "isolation_rule_1_trigger": "Legt fest, was die Isolation auslöst: ein Binärsensor oder ein bestimmter HVAC-Modus der Gruppe.",
+              "isolation_rule_1_sensor": "(Sensor-Trigger) Binärsensor, der die Isolation auslöst, wenn er ON ist.",
+              "isolation_rule_1_hvac_modes": "(HVAC-Modus-Trigger) Isolation aktiviert sich, wenn der Ziel-Modus der Gruppe einer dieser Modi ist.",
+              "isolation_rule_1_entities": "Gruppenmitglieder, die isoliert werden sollen, wenn der Trigger aktiv ist.",
+              "isolation_rule_1_activate_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Aktivierung, bevor Mitglieder isoliert werden.",
+              "isolation_rule_1_restore_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Deaktivierung, bevor Mitglieder in den Gruppen-Zielzustand zurückgeführt werden."
+            }
+          },
+          "isolation_rule_2_section": {
+            "name": "Mitglieder-Isolation – Regel 2",
+            "description": "Optionale zweite Isolationsregel mit unabhängigem Trigger und Mitgliederliste.",
+            "data": {
+              "isolation_rule_2_trigger": "Trigger-Typ",
+              "isolation_rule_2_sensor": "Isolationssensor",
+              "isolation_rule_2_hvac_modes": "HVAC-Modus-Trigger",
+              "isolation_rule_2_entities": "Zu isolierende Entitäten",
+              "isolation_rule_2_activate_delay": "Aktivierungsverzögerung (Sekunden)",
+              "isolation_rule_2_restore_delay": "Wiederherstellungsverzögerung (Sekunden)"
+            },
+            "data_description": {
+              "isolation_rule_2_trigger": "Legt fest, was die Isolation auslöst: ein Binärsensor oder ein bestimmter HVAC-Modus der Gruppe.",
+              "isolation_rule_2_sensor": "(Sensor-Trigger) Binärsensor, der die Isolation auslöst, wenn er ON ist.",
+              "isolation_rule_2_hvac_modes": "(HVAC-Modus-Trigger) Isolation aktiviert sich, wenn der Ziel-Modus der Gruppe einer dieser Modi ist.",
+              "isolation_rule_2_entities": "Gruppenmitglieder, die isoliert werden sollen, wenn der Trigger aktiv ist.",
+              "isolation_rule_2_activate_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Aktivierung, bevor Mitglieder isoliert werden.",
+              "isolation_rule_2_restore_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Deaktivierung, bevor Mitglieder in den Gruppen-Zielzustand zurückgeführt werden."
+            }
+          },
+          "isolation_rule_3_section": {
+            "name": "Mitglieder-Isolation – Regel 3",
+            "description": "Optionale dritte Isolationsregel mit unabhängigem Trigger und Mitgliederliste.",
+            "data": {
+              "isolation_rule_3_trigger": "Trigger-Typ",
+              "isolation_rule_3_sensor": "Isolationssensor",
+              "isolation_rule_3_hvac_modes": "HVAC-Modus-Trigger",
+              "isolation_rule_3_entities": "Zu isolierende Entitäten",
+              "isolation_rule_3_activate_delay": "Aktivierungsverzögerung (Sekunden)",
+              "isolation_rule_3_restore_delay": "Wiederherstellungsverzögerung (Sekunden)"
+            },
+            "data_description": {
+              "isolation_rule_3_trigger": "Legt fest, was die Isolation auslöst: ein Binärsensor oder ein bestimmter HVAC-Modus der Gruppe.",
+              "isolation_rule_3_sensor": "(Sensor-Trigger) Binärsensor, der die Isolation auslöst, wenn er ON ist.",
+              "isolation_rule_3_hvac_modes": "(HVAC-Modus-Trigger) Isolation aktiviert sich, wenn der Ziel-Modus der Gruppe einer dieser Modi ist.",
+              "isolation_rule_3_entities": "Gruppenmitglieder, die isoliert werden sollen, wenn der Trigger aktiv ist.",
+              "isolation_rule_3_activate_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Aktivierung, bevor Mitglieder isoliert werden.",
+              "isolation_rule_3_restore_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Deaktivierung, bevor Mitglieder in den Gruppen-Zielzustand zurückgeführt werden."
+            }
+          },
+          "isolation_rule_4_section": {
+            "name": "Mitglieder-Isolation – Regel 4",
+            "description": "Optionale vierte Isolationsregel mit unabhängigem Trigger und Mitgliederliste.",
+            "data": {
+              "isolation_rule_4_trigger": "Trigger-Typ",
+              "isolation_rule_4_sensor": "Isolationssensor",
+              "isolation_rule_4_hvac_modes": "HVAC-Modus-Trigger",
+              "isolation_rule_4_entities": "Zu isolierende Entitäten",
+              "isolation_rule_4_activate_delay": "Aktivierungsverzögerung (Sekunden)",
+              "isolation_rule_4_restore_delay": "Wiederherstellungsverzögerung (Sekunden)"
+            },
+            "data_description": {
+              "isolation_rule_4_trigger": "Legt fest, was die Isolation auslöst: ein Binärsensor oder ein bestimmter HVAC-Modus der Gruppe.",
+              "isolation_rule_4_sensor": "(Sensor-Trigger) Binärsensor, der die Isolation auslöst, wenn er ON ist.",
+              "isolation_rule_4_hvac_modes": "(HVAC-Modus-Trigger) Isolation aktiviert sich, wenn der Ziel-Modus der Gruppe einer dieser Modi ist.",
+              "isolation_rule_4_entities": "Gruppenmitglieder, die isoliert werden sollen, wenn der Trigger aktiv ist.",
+              "isolation_rule_4_activate_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Aktivierung, bevor Mitglieder isoliert werden.",
+              "isolation_rule_4_restore_delay": "(Nur Sensor-/HVAC-Modus-Trigger) Wartezeit nach Trigger-Deaktivierung, bevor Mitglieder in den Gruppen-Zielzustand zurückgeführt werden."
             }
           },
           "member_template_section": {
@@ -236,6 +298,7 @@
               "debounce_delay": "Entprellverzögerung (Sekunden)",
               "retry_attempts": "Wiederholungsversuche",
               "retry_delay": "Wiederholungsverzögerung (Sekunden)",
+              "force_retry": "Wiederholung erzwingen",
               "staggered_call_delay": "Verzögerung zwischen Befehlen (Sekunden)",
               "grace_period": "Optimistische UI-Übergangszeit (Sekunden)",
               "expose_smart_sensors": "Smarte Sensoren bereitstellen",
@@ -246,6 +309,7 @@
               "debounce_delay": "Wartezeit vor dem Senden von Befehlen. Höhere Werte verhindern 'schnell aufeinanderfolgende' Befehle beim Schieben von Reglern, fühlen sich aber langsamer an.",
               "retry_attempts": "Wie oft Befehle erneut gesendet werden, falls ein Gerät nicht antwortet. Auf 0 setzen zum Deaktivieren.",
               "retry_delay": "Pause zwischen Wiederholungsversuchen. Gibt Geräten einen Moment zur Erholung.",
+              "force_retry": "Sendet Befehle immer an alle Mitglieder, auch wenn diese den Zielzustand bereits melden.",
               "staggered_call_delay": "Wartezeit zwischen einzelnen Befehlen an Gruppenmitglieder. Die gestaffelte Übertragung verhindert Netzwerküberlastung in Zigbee/Matter-Umgebungen. Auf 0 setzen zum Deaktivieren.",
               "grace_period": "Wie lange die Gruppe den gesendeten Wert anzeigt, bevor sie zum Mitgliederdurchschnitt wechselt. Verhindert UI-Flackern, wenn langsame Geräte (Cloud-Bridges, Zigbee) ihren alten Zustand zurückmelden. Auf 0 setzen zum Deaktivieren.",
               "expose_smart_sensors": "Erstellt zusätzliche Sensor-Entitäten für Temperatur und Feuchtigkeit der Gruppe (nützlich für Diagramme).",
@@ -266,6 +330,7 @@
       "master_refresh_notice": "Master-Entität hinzugefügt. Neue Optionen verfügbar.",
       "master_options_notice": "Neue Master-Entitäts-Option",
       "isolation_all_selected": "Mindestens ein Mitglied muss außerhalb der Isolierung bleiben.",
+      "isolation_entity_overlap": "Jedes Mitglied darf nur in einer Isolationsregel vorkommen.",
       "sensor_loop_protection": "Ein Climate Group Helper-Sensor kann nicht als externer Sensor verwendet werden — das würde eine Rückkopplungsschleife erzeugen."
     },
     "abort": {
@@ -390,6 +455,14 @@
       "options": {
         "ignore": "Ignorieren",
         "off": "Ausschalten"
+      }
+    },
+    "isolation_rule_count": {
+      "options": {
+        "1": "1 Regel",
+        "2": "2 Regeln",
+        "3": "3 Regeln",
+        "4": "4 Regeln"
       }
     },
     "isolation_trigger": {

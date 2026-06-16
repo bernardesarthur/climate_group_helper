@@ -30,6 +30,7 @@ from .const import (
     MODE_MODES_MAP,
     ATTR_SERVICE_MAP,
     CONF_FEATURE_STRATEGY,
+    CONF_FORCE_RETRY,
     CONF_IGNORE_OFF_MEMBERS_SYNC,
     CONF_IGNORE_OFF_MEMBERS_SCHEDULE,
     CONF_UNION_OUT_OF_BOUNDS_ACTION,
@@ -481,11 +482,12 @@ class BaseServiceCallHandler(ABC):
     def _should_diff(self) -> bool:
         """Whether _get_filtered_entities should filter by value deviation.
 
-        False (default): all capable entities are included regardless of current value.
-        Override to True in handlers that should only update members that actually need it
-        (Sync/Schedule).
+        Default: True unless CONF_FORCE_RETRY is enabled, in which case all capable
+        entities are included regardless of current value.
+        Override to False in handlers that must always send regardless of this option
+        (ClimateCallHandler, SwitchCallHandler).
         """
-        return False
+        return not self._group.config.get(CONF_FORCE_RETRY, False)
 
     def _get_parent_id(self) -> str:
         """Create a unique Parent ID for echo tracking.
@@ -1056,6 +1058,9 @@ class ClimateCallHandler(BaseServiceCallHandler):
             return []
         return super()._generate_calls(data=data, filter_state=filter_state)
 
+    def _should_diff(self) -> bool:
+        return False
+
     def _block_all_calls(self, data: dict[str, Any] | None = None) -> bool:
         """Block calls if blocking mode is active, unless turning the group off."""
         blocked = self._group.run_state.blocked
@@ -1136,10 +1141,6 @@ class SyncCallHandler(BaseServiceCallHandler):
         """
         return super()._is_member_blocked(entity_id) or self._is_oob_blocked(entity_id)
 
-    def _should_diff(self) -> bool:
-        """Only update members that actually need it."""
-        return True
-
     def _get_target_value(self, attr: str, value: Any = None) -> Any:
         """Read from target_state with group_offset applied for temperature attributes."""
         if self._apply_group_offset():
@@ -1147,7 +1148,16 @@ class SyncCallHandler(BaseServiceCallHandler):
         return getattr(self.target_state, attr, None)
 
     def _block_unsynced_entity(self, attr: str, target_value: Any, state: State) -> bool:  # noqa: ARG002
-        """Apply Partial Sync: skip OFF members if CONF_IGNORE_OFF_MEMBERS_SYNC is set."""
+        """Apply Partial Sync (skip OFF members) AND exclude template-covered members.
+
+        Covered members are owned by the Range Template — their changeover/correction
+        is driven exclusively by the TemplateCallHandler, independent of sync_mode.
+        Excluding them here prevents a double-drive when sync (LOCK/MIRROR_LOCK) is
+        active. UI/Schedule/Boost/Template handlers do NOT override this hook, so
+        legitimate heat_cool commands still reach covered members.
+        """
+        if self._group.member_template_manager.is_covered_state(state):
+            return True
         return self._skip_off_member(state=state, target_value=target_value, conf_key=CONF_IGNORE_OFF_MEMBERS_SYNC)
 
     def _block_all_calls(self, data: dict[str, Any] | None = None) -> bool:
@@ -1177,12 +1187,6 @@ class WindowControlCallHandler(BaseServiceCallHandler):
         """Bypass global block, but still respect per-member isolation."""
         return entity_id in self._group.run_state.isolated_members
 
-    def _should_diff(self) -> bool:
-        # Only send to members that actually deviate — prevents enforce_override() from
-        # re-sending to members that are already at the correct window/restore value,
-        # which would generate echoes that trigger further enforce cycles.
-        return True
-
     def _get_target_value(self, attr: str, value: Any = None) -> Any:
         # Restore path: read target_state+offset so diff-check sees the same value members have.
         # Override path (window open): value is the explicit payload — use as-is.
@@ -1211,10 +1215,6 @@ class PresenceCallHandler(BaseServiceCallHandler):
         """Bypass global block, but still respect per-member isolation."""
         return entity_id in self._group.run_state.isolated_members
 
-    def _should_diff(self) -> bool:
-        # Same reasoning as WindowControlCallHandler — skip members already at the away value.
-        return True
-
     def _get_target_value(self, attr: str, value: Any = None) -> Any:
         # Restore path: read target_state+offset so diff-check sees the same value members have.
         # Away path (presence active): value is the explicit away payload — use as-is.
@@ -1238,10 +1238,6 @@ class ScheduleCallHandler(BaseServiceCallHandler):
     def _is_member_blocked(self, entity_id: str) -> bool:
         """Extend base blocking with OOB check (same as SyncCallHandler)."""
         return super()._is_member_blocked(entity_id) or self._is_oob_blocked(entity_id)
-
-    def _should_diff(self) -> bool:
-        """Only update members that actually need it."""
-        return True
 
     def _get_target_value(self, attr: str, value: Any = None) -> Any:
         """Read from target_state with group_offset applied for temperature attributes."""
@@ -1275,6 +1271,9 @@ class SwitchCallHandler(BaseServiceCallHandler):
         """Initialize the switch call handler."""
         super().__init__(group)
 
+    def _should_diff(self) -> bool:
+        return False
+
     def _is_member_blocked(self, entity_id: str) -> bool:  # noqa: ARG002
         """Bypass all blocking — switch commands always reach every member."""
         return False
@@ -1297,6 +1296,9 @@ class SwitchEnforceCallHandler(BaseServiceCallHandler):
 
     def __init__(self, group: ClimateGroupHelper):
         super().__init__(group)
+
+    def _should_diff(self) -> bool:
+        return False
 
     def _is_member_blocked(self, entity_id: str) -> bool:
         return entity_id in self._group.run_state.isolated_members
@@ -1321,10 +1323,6 @@ class OverrideCallHandler(BaseServiceCallHandler):
         """Extend base blocking with OOB check."""
         return super()._is_member_blocked(entity_id) or self._is_oob_blocked(entity_id)
 
-    def _should_diff(self) -> bool:
-        """Only update members that actually need it."""
-        return True
-
     def _get_target_value(self, attr: str, value: Any = None) -> Any:
         """Read from target_state instead of using the passed value."""
         return getattr(self.target_state, attr, None)
@@ -1332,5 +1330,53 @@ class OverrideCallHandler(BaseServiceCallHandler):
     def _apply_group_offset(self) -> bool:
         # Apply offset only during restore (active_override cleared = boost just expired).
         # During boost, active_override is set — exact temperature must land unchanged.
+        return self._group.run_state.active_override is None
+
+
+class TemplateCallHandler(BaseServiceCallHandler):
+    """Call handler that drives Member-Template-covered members (Range Template).
+
+    The Range Template owns the full lifecycle of covered (single-setpoint) members:
+    their physical mode (heat/cool/deadband) must always match
+    `expected_mode_for(current_temperature, band)`. Any deviation — whether caused by
+    a temperature crossing (auto-changeover) or a manual device change (correction) —
+    is the same operation: re-send the group target (`heat_cool` + band), which the
+    pipeline stage `_process_range_template` translates into the physical command.
+
+    This handler is the *sole, intentional* driver of that changeover, independent of
+    `sync_mode`. The `SyncCallHandler` excludes covered members (see its
+    `_block_unsynced_entity`), so there is no double-drive when LOCK/MIRROR_LOCK is active.
+
+    Profile: target-state based with diffing (only deviating covered members get a call),
+    addresses ONLY covered members, respects blocking/isolation/OOB, and is suppressed
+    during global blocking (window/switch/presence).
+    """
+
+    CONTEXT_ID = "member_template"
+
+    def __init__(self, group: ClimateGroupHelper):
+        """Initialize the template call handler."""
+        super().__init__(group)
+
+    def _is_member_blocked(self, entity_id: str) -> bool:
+        """Extend base blocking with OOB check (same as SyncCallHandler)."""
+        return super()._is_member_blocked(entity_id) or self._is_oob_blocked(entity_id)
+
+    def _get_target_value(self, attr: str, value: Any = None) -> Any:
+        """Read from target_state with group_offset applied for temperature attributes."""
+        if self._apply_group_offset():
+            return self._get_target_value_with_offset(attr, value)
+        return getattr(self.target_state, attr, None)
+
+    def _block_unsynced_entity(self, attr: str, target_value: Any, state: State) -> bool:  # noqa: ARG002
+        """Address ONLY template-covered members — skip everything else."""
+        return not self._group.member_template_manager.is_covered_state(state)
+
+    def _block_all_calls(self, data: dict[str, Any] | None = None) -> bool:  # noqa: ARG002
+        """Suppress changeover while a blocking source is active (window/switch/presence)."""
+        return self._group.run_state.blocked
+
+    def _apply_group_offset(self) -> bool:
+        # Suspended during active override (boost/schedule_override): see SyncCallHandler.
         return self._group.run_state.active_override is None
 

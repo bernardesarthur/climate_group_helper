@@ -201,20 +201,82 @@
             "name": "Isolamento de membros",
             "description": "Isole temporariamente membros específicos (ex: radiadores atrás de cortinas) quando um sensor binário está ativo.",
             "data": {
-              "isolation_trigger": "Tipo de acionador",
-              "isolation_sensor": "Sensor de isolamento",
-              "isolation_trigger_hvac_modes": "Acionador por modo HVAC",
-              "isolation_entities": "Entidades a isolar",
-              "isolation_activate_delay": "Atraso de ativação (segundos)",
-              "isolation_restore_delay": "Atraso de restauração (segundos)"
+              "isolation_rule_count": "Número de regras",
+              "isolation_rule_1_trigger": "Tipo de gatilho",
+              "isolation_rule_1_sensor": "Sensor de isolamento",
+              "isolation_rule_1_hvac_modes": "Gatilho de modo HVAC",
+              "isolation_rule_1_entities": "Entidades a isolar",
+              "isolation_rule_1_activate_delay": "Atraso de ativação (segundos)",
+              "isolation_rule_1_restore_delay": "Atraso de restauro (segundos)"
             },
             "data_description": {
-              "isolation_trigger": "Escolha o que ativa o isolamento: um sensor binário ou um modo HVAC específico do grupo.",
-              "isolation_sensor": "(Opcional) Sensor binário que ativa o isolamento quando ON.",
-              "isolation_trigger_hvac_modes": "(Acionador por modo HVAC) O isolamento ativa-se quando o modo alvo do grupo corresponde a um destes.",
-              "isolation_entities": "Membros do grupo a isolar quando o sensor estiver ativo.",
-              "isolation_activate_delay": "(Apenas acionador sensor / modo HVAC) Tempo de espera após sensor ON antes de isolar membros.",
-              "isolation_restore_delay": "(Apenas acionador sensor / modo HVAC) Tempo de espera após sensor OFF antes de restaurar membros."
+              "isolation_rule_count": "Quantas regras de isolamento independentes mostrar. Guardar após alteração para mostrar ou ocultar slots adicionais.",
+              "isolation_rule_1_trigger": "Escolha o que ativa o isolamento: um sensor binário ou um modo HVAC específico do grupo.",
+              "isolation_rule_1_sensor": "(Gatilho sensor) Sensor binário que aciona o isolamento quando está ON.",
+              "isolation_rule_1_hvac_modes": "(Gatilho modo HVAC) O isolamento ativa-se quando o modo alvo do grupo é um destes.",
+              "isolation_rule_1_entities": "Membros do grupo a isolar quando o gatilho está ativo.",
+              "isolation_rule_1_activate_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a ativação do gatilho antes de isolar membros.",
+              "isolation_rule_1_restore_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a desativação do gatilho antes de restaurar membros ao estado alvo do grupo."
+            }
+          },
+          "isolation_rule_2_section": {
+            "name": "Isolamento de membro – Regra 2",
+            "description": "Segunda regra de isolamento opcional com gatilho e lista de membros independentes.",
+            "data": {
+              "isolation_rule_2_trigger": "Tipo de gatilho",
+              "isolation_rule_2_sensor": "Sensor de isolamento",
+              "isolation_rule_2_hvac_modes": "Gatilho de modo HVAC",
+              "isolation_rule_2_entities": "Entidades a isolar",
+              "isolation_rule_2_activate_delay": "Atraso de ativação (segundos)",
+              "isolation_rule_2_restore_delay": "Atraso de restauro (segundos)"
+            },
+            "data_description": {
+              "isolation_rule_2_trigger": "Escolha o que ativa o isolamento: um sensor binário ou um modo HVAC específico do grupo.",
+              "isolation_rule_2_sensor": "(Gatilho sensor) Sensor binário que aciona o isolamento quando está ON.",
+              "isolation_rule_2_hvac_modes": "(Gatilho modo HVAC) O isolamento ativa-se quando o modo alvo do grupo é um destes.",
+              "isolation_rule_2_entities": "Membros do grupo a isolar quando o gatilho está ativo.",
+              "isolation_rule_2_activate_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a ativação do gatilho antes de isolar membros.",
+              "isolation_rule_2_restore_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a desativação do gatilho antes de restaurar membros ao estado alvo do grupo."
+            }
+          },
+          "isolation_rule_3_section": {
+            "name": "Isolamento de membro – Regra 3",
+            "description": "Terceira regra de isolamento opcional com gatilho e lista de membros independentes.",
+            "data": {
+              "isolation_rule_3_trigger": "Tipo de gatilho",
+              "isolation_rule_3_sensor": "Sensor de isolamento",
+              "isolation_rule_3_hvac_modes": "Gatilho de modo HVAC",
+              "isolation_rule_3_entities": "Entidades a isolar",
+              "isolation_rule_3_activate_delay": "Atraso de ativação (segundos)",
+              "isolation_rule_3_restore_delay": "Atraso de restauro (segundos)"
+            },
+            "data_description": {
+              "isolation_rule_3_trigger": "Escolha o que ativa o isolamento: um sensor binário ou um modo HVAC específico do grupo.",
+              "isolation_rule_3_sensor": "(Gatilho sensor) Sensor binário que aciona o isolamento quando está ON.",
+              "isolation_rule_3_hvac_modes": "(Gatilho modo HVAC) O isolamento ativa-se quando o modo alvo do grupo é um destes.",
+              "isolation_rule_3_entities": "Membros do grupo a isolar quando o gatilho está ativo.",
+              "isolation_rule_3_activate_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a ativação do gatilho antes de isolar membros.",
+              "isolation_rule_3_restore_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a desativação do gatilho antes de restaurar membros ao estado alvo do grupo."
+            }
+          },
+          "isolation_rule_4_section": {
+            "name": "Isolamento de membro – Regra 4",
+            "description": "Quarta regra de isolamento opcional com gatilho e lista de membros independentes.",
+            "data": {
+              "isolation_rule_4_trigger": "Tipo de gatilho",
+              "isolation_rule_4_sensor": "Sensor de isolamento",
+              "isolation_rule_4_hvac_modes": "Gatilho de modo HVAC",
+              "isolation_rule_4_entities": "Entidades a isolar",
+              "isolation_rule_4_activate_delay": "Atraso de ativação (segundos)",
+              "isolation_rule_4_restore_delay": "Atraso de restauro (segundos)"
+            },
+            "data_description": {
+              "isolation_rule_4_trigger": "Escolha o que ativa o isolamento: um sensor binário ou um modo HVAC específico do grupo.",
+              "isolation_rule_4_sensor": "(Gatilho sensor) Sensor binário que aciona o isolamento quando está ON.",
+              "isolation_rule_4_hvac_modes": "(Gatilho modo HVAC) O isolamento ativa-se quando o modo alvo do grupo é um destes.",
+              "isolation_rule_4_entities": "Membros do grupo a isolar quando o gatilho está ativo.",
+              "isolation_rule_4_activate_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a ativação do gatilho antes de isolar membros.",
+              "isolation_rule_4_restore_delay": "(Apenas gatilho sensor/modo HVAC) Tempo de espera após a desativação do gatilho antes de restaurar membros ao estado alvo do grupo."
             }
           },
           "member_template_section": {
@@ -236,6 +298,7 @@
               "debounce_delay": "Atraso de Debounce (segundos)",
               "retry_attempts": "Tentativas de Repetição",
               "retry_delay": "Atraso de Repetição (segundos)",
+              "force_retry": "Forçar nova tentativa",
               "staggered_call_delay": "Atraso entre comandos (segundos)",
               "grace_period": "Período de graça da UI otimista (segundos)",
               "expose_smart_sensors": "Expor sensores inteligentes",
@@ -246,6 +309,7 @@
               "debounce_delay": "Tempo de espera antes de enviar comandos. Valores mais altos evitam comandos de 'tiro rápido' ao deslizar controlos.",
               "retry_attempts": "Quantas vezes reenviar um comando se um dispositivo não responder. Definir como 0 para desativar.",
               "retry_delay": "Pausa entre tentativas. Dar um momento aos dispositivos para recuperar pode melhorar a fiabilidade.",
+              "force_retry": "Reenvia sempre comandos a todos os membros, mesmo que já reportem o estado alvo.",
               "staggered_call_delay": "Tempo de espera entre comandos individuais aos membros do grupo. Escalonar os comandos evita a congestionamento da rede em ambientes Zigbee/Matter. Definir como 0 para desativar.",
               "grace_period": "Quanto tempo o grupo mostra o valor enviado antes de mudar para a média dos membros. Evita o cintilamento da UI quando dispositivos lentos (pontes Cloud, Zigbee) ecoam o seu estado antigo. Definir como 0 para desativar.",
               "expose_smart_sensors": "Cria entidades de sensor adicionais para a temperatura e humidade do grupo (útil para gráficos).",
@@ -266,6 +330,7 @@
       "master_refresh_notice": "Entidade Mestre adicionada. Novas opções disponíveis.",
       "master_options_notice": "Nova opção de entidade Mestre",
       "isolation_all_selected": "Pelo menos um membro deve permanecer fora do isolamento.",
+      "isolation_entity_overlap": "Cada membro só pode aparecer numa regra de isolamento.",
       "sensor_loop_protection": "Não é possível usar um sensor do Climate Group Helper como sensor externo — isso criaria um ciclo de retroalimentação."
     },
     "abort": {
@@ -390,6 +455,14 @@
       "options": {
         "ignore": "Ignorar",
         "off": "Desligar"
+      }
+    },
+    "isolation_rule_count": {
+      "options": {
+        "1": "1 regra",
+        "2": "2 regras",
+        "3": "3 regras",
+        "4": "4 regras"
       }
     },
     "isolation_trigger": {

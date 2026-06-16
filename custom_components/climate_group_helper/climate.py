@@ -47,7 +47,6 @@ from homeassistant.components.group.util import (
     find_state_attributes,
     most_frequent_attribute,
     reduce_attribute,
-    states_equal,
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.exceptions import ServiceValidationError
@@ -90,6 +89,7 @@ from .const import (
     CONF_HVAC_MODE_STRATEGY,
     CONF_IGNORE_OFF_MEMBERS_TEMPERATURE,
     CONF_ISOLATION_ENTITIES,
+    CONF_ISOLATION_RULES,
     CONF_ISOLATION_SENSOR,
     CONF_MASTER_ENTITY,
     CONF_MEMBER_OFFSET_CORRECTION,
@@ -152,6 +152,7 @@ from .service_call import (
     SwitchCallHandler,
     SwitchEnforceCallHandler,
     SyncCallHandler,
+    TemplateCallHandler,
     WindowControlCallHandler,
 )
 from .state import (
@@ -205,12 +206,18 @@ def _warn_missing_entities(hass: HomeAssistant, config: dict[str, Any], group_en
     """Log a warning for each configured entity that no longer exists in the state machine."""
     registry = er.async_get(hass)
     checks: list[tuple[str, str]] = []
-    for key in (CONF_ROOM_SENSOR, CONF_ZONE_SENSOR, CONF_ISOLATION_SENSOR, CONF_SCHEDULE_ENTITY, CONF_SCHEDULE_BYPASS_ENTITY):
+    for key in (CONF_ROOM_SENSOR, CONF_ZONE_SENSOR, CONF_SCHEDULE_ENTITY, CONF_SCHEDULE_BYPASS_ENTITY):
         if val := config.get(key):
             checks.append((key, val))
-    for key in (CONF_PRESENCE_SENSOR, CONF_PRESENCE_ZONE, CONF_ISOLATION_ENTITIES, CONF_TEMP_UPDATE_TARGETS, CONF_HUMIDITY_UPDATE_TARGETS):
+    for key in (CONF_PRESENCE_SENSOR, CONF_PRESENCE_ZONE, CONF_TEMP_UPDATE_TARGETS, CONF_HUMIDITY_UPDATE_TARGETS):
         for eid in config.get(key, []):
             checks.append((key, eid))
+    # Isolation entities and sensors are nested inside CONF_ISOLATION_RULES
+    for rule in config.get(CONF_ISOLATION_RULES, []):
+        if sensor := rule.get(CONF_ISOLATION_SENSOR):
+            checks.append((CONF_ISOLATION_SENSOR, sensor))
+        for eid in rule.get(CONF_ISOLATION_ENTITIES, []):
+            checks.append((CONF_ISOLATION_ENTITIES, eid))
     for key, eid in checks:
         if hass.states.get(eid) is None and registry.async_get(eid) is None:
             _LOGGER.warning(
@@ -364,11 +371,18 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         self.switch_call_handler = SwitchCallHandler(self)
         self.switch_enforce_call_handler = SwitchEnforceCallHandler(self)
         self.sync_mode_call_handler = SyncCallHandler(self)
+        self.template_call_handler = TemplateCallHandler(self)
         self.window_control_call_handler = WindowControlCallHandler(self)
 
         # Modules
         self.boost_override_manager = BoostOverrideManager(self)
-        self.member_isolation_handler = MemberIsolationHandler(self)
+        self.member_isolation_handlers: list[MemberIsolationHandler] = (
+            [
+                MemberIsolationHandler(self, rule)
+                for rule in self.config.get(CONF_ISOLATION_RULES, [])
+            ]
+            if self.advanced_mode else []
+        )
         self.override_handler = OverrideHandler(self)
         self.presence_handler = PresenceHandler(self)
         self.presence_override_manager = PresenceOverrideManager(self)
@@ -503,8 +517,9 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
             await self.schedule_handler.async_setup()
             await self.schedule_bypass_handler.async_setup()
 
-            # Setup member isolation handler (subscribes to isolation sensor events)
-            await self.member_isolation_handler.async_setup()
+            # Setup member isolation handlers (subscribe to isolation sensor events)
+            for handler in self.member_isolation_handlers:
+                await handler.async_setup()
 
         # Update initial state
         self.async_defer_or_update_ha_state()
@@ -621,12 +636,14 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         await self.switch_call_handler.async_shutdown()
         await self.switch_enforce_call_handler.async_shutdown()
         await self.sync_mode_call_handler.async_shutdown()
+        await self.template_call_handler.async_shutdown()
         await self.window_control_call_handler.async_shutdown()
         self.sync_mode_handler.async_teardown()
 
         if self.advanced_mode:
             self.calibration_handler.async_teardown()
-            self.member_isolation_handler.async_teardown()
+            for handler in self.member_isolation_handlers:
+                handler.async_teardown()
             self.override_handler.async_teardown()
             self.presence_handler.async_teardown()
             self.schedule_handler.async_teardown()
@@ -973,6 +990,25 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         self.async_defer_or_update_ha_state()
 
     @callback
+    def _trigger_template_changeover(self) -> None:
+        """Schedule a TemplateCallHandler enforcement for covered members.
+
+        Called from the member-event path (a sync `@callback`) when a template-covered
+        member reports a change (e.g. current_temperature crossing a band boundary).
+        `call_debounced` is a coroutine, so it is launched as an HA background task
+        (HA holds the reference and cancels it on stop; the handler's own
+        `async_shutdown` cancels the actual execution task on entity removal).
+
+        The handler diffs covered members against target_state, so only those actually
+        deviating from their expected physical mode receive a call — an echo of our own
+        command terminates naturally (no deviation left).
+        """
+        self.hass.async_create_background_task(
+            self.template_call_handler.call_debounced(),
+            name="climate_group_template_changeover",
+        )
+
+    @callback
     def async_update_group_state(self) -> None:
         """Query all members and determine the climate group state."""
 
@@ -1036,6 +1072,12 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
             if self.change_state and self.change_state.entity_id in self.climate_entity_ids:
                 self.sync_mode_handler.resync()
 
+                # Range Template owns covered members: drive their changeover/correction
+                # via the TemplateCallHandler — independent of sync_mode. The SyncCallHandler
+                # excludes covered members, so this is the sole, intentional driver.
+                if self.member_template_manager.is_covered_state(self.event.data.get("new_state")):
+                    self._trigger_template_changeover()
+
         # All available HVAC modes --> list of HVACMode (str), e.g. [<HVACMode.OFF: 'off'>, <HVACMode.HEAT: 'heat'>, <HVACMode.AUTO: 'auto'>, ...]
         hvac_modes = self._reduce_attributes(list(find_state_attributes(self.states, ATTR_HVAC_MODES)))
         hvac_modes_list = hvac_modes if isinstance(hvac_modes, list) else []
@@ -1045,7 +1087,9 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         self._attr_hvac_modes = self._sort_hvac_modes(hvac_modes_list)
 
         # A list of all HVAC modes that are currently set
-        self._current_hvac_modes = [state.state for state in self.states]
+        self._current_hvac_modes = [
+            self.member_template_manager.display_mode(state) for state in self.states
+        ]
 
         # Determine the group's HVAC mode and update the attribute
         self._attr_hvac_mode = self._determine_hvac_mode(self._current_hvac_modes)
@@ -1058,7 +1102,10 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         self._attr_available = True
 
         # The group state is assumed if not all states are equal
-        self._attr_assumed_state = not states_equal(self.states)
+        display_modes = [
+            self.member_template_manager.display_mode(state) for state in self.states
+        ]
+        self._attr_assumed_state = len(set(display_modes)) > 1
 
         # Determine HVAC action
         current_hvac_actions = list(find_state_attributes(self.states, ATTR_HVAC_ACTION))
@@ -1130,7 +1177,10 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         must reflect the full group regardless of which members are currently active.
         """
         temp_states = (
-            [s for s in self.states if s.state != HVACMode.OFF]
+            [
+                s for s in self.states
+                if self.member_template_manager.display_mode(s) != HVACMode.OFF
+            ]
             if self._ignore_off_members_temperature
             else self.states
         )

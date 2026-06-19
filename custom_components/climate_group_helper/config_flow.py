@@ -14,7 +14,6 @@ from homeassistant.components.climate import (
     ATTR_HVAC_MODES,
     DEFAULT_MAX_TEMP,
     DEFAULT_MIN_TEMP,
-    ClimateEntityFeature,
     HVACMode,
 )
 from homeassistant.components.number import DOMAIN as NUMBER_DOMAIN
@@ -61,6 +60,9 @@ from .const import (
     CONF_ISOLATION_SENSOR,
     CONF_ISOLATION_TRIGGER_HVAC_MODES,
     CONF_ISOLATION_TRIGGER,
+    CONF_ISOLATION_ACTION_TYPE,
+    CONF_ISOLATION_ACTION_HVAC_MODE,
+    CONF_ISOLATION_ACTION_PRESET_MODE,
     CONF_MASTER_ENTITY,
     CONF_MEMBER_OFFSET_CORRECTION,
     CONF_MEMBER_TEMP_OFFSETS,
@@ -117,6 +119,7 @@ from .const import (
     FeatureStrategy,
     HvacModeStrategy,
     IsolationTrigger,
+    IsolationActionType,
     PresenceAction,
     PresenceMode,
     RoundOption,
@@ -254,6 +257,10 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
                 "isolation_rule_2_sensor",
                 "isolation_rule_3_sensor",
                 "isolation_rule_4_sensor",
+                "isolation_rule_1_action_preset_mode",
+                "isolation_rule_2_action_preset_mode",
+                "isolation_rule_3_action_preset_mode",
+                "isolation_rule_4_action_preset_mode",
                 CONF_PRESENCE_AWAY_PRESET,
                 CONF_PRESENCE_AWAY_TEMPERATURE,
                 CONF_PRESENCE_SENSOR,
@@ -324,7 +331,18 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
             slot_trigger = current_config.get(f"isolation_rule_{i}_trigger", IsolationTrigger.DISABLED)
             if slot_trigger == IsolationTrigger.DISABLED:
                 continue
-            rule: dict[str, Any] = {CONF_ISOLATION_TRIGGER: slot_trigger}
+            rule: dict[str, Any] = {
+                CONF_ISOLATION_TRIGGER: slot_trigger,
+                CONF_ISOLATION_ACTION_TYPE: current_config.get(
+                    f"isolation_rule_{i}_action_type", IsolationActionType.HVAC_MODE.value
+                ),
+                CONF_ISOLATION_ACTION_HVAC_MODE: current_config.get(
+                    f"isolation_rule_{i}_action_hvac_mode", HVACMode.OFF.value
+                ),
+                CONF_ISOLATION_ACTION_PRESET_MODE: current_config.get(
+                    f"isolation_rule_{i}_action_preset_mode"
+                ),
+            }
             entities = [
                 e for e in current_config.get(f"isolation_rule_{i}_entities", [])
                 if e in valid_members
@@ -356,7 +374,10 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
 
         # Remove all slot keys and legacy flat isolation keys from stored config
         for i in range(1, 5):
-            for suffix in ("trigger", "sensor", "hvac_modes", "entities", "activate_delay", "restore_delay"):
+            for suffix in (
+                "trigger", "sensor", "hvac_modes", "entities", "activate_delay", "restore_delay",
+                "action_type", "action_hvac_mode", "action_preset_mode"
+            ):
                 current_config.pop(f"isolation_rule_{i}_{suffix}", None)
         for legacy_key in (
             CONF_ISOLATION_TRIGGER, CONF_ISOLATION_SENSOR, CONF_ISOLATION_TRIGGER_HVAC_MODES,
@@ -1096,6 +1117,7 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
         seen: set[str],
         hvac_mode_options: list[str],
         member_options: list[dict[str, Any]],
+        preset_options: list[str],
     ) -> dict[Any, Any]:
         """Return the voluptuous fields for one isolation rule slot (i=1..4)."""
         slot_trigger = slot.get(CONF_ISOLATION_TRIGGER, IsolationTrigger.DISABLED)
@@ -1105,7 +1127,20 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
         slot_activate_delay = slot.get(CONF_ISOLATION_ACTIVATE_DELAY, 0)
         slot_restore_delay = slot.get(CONF_ISOLATION_RESTORE_DELAY, 0)
 
+        slot_action_type = slot.get(CONF_ISOLATION_ACTION_TYPE, IsolationActionType.HVAC_MODE.value)
+        slot_action_hvac_mode = slot.get(CONF_ISOLATION_ACTION_HVAC_MODE, HVACMode.OFF.value)
+        slot_action_preset_mode = slot.get(CONF_ISOLATION_ACTION_PRESET_MODE)
+
         return {
+            vol.Optional(
+                f"isolation_rule_{i}_entities", default=slot_entities
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=member_options,  # type: ignore[typeddict-item]
+                    multiple=True,
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
             vol.Required(f"isolation_rule_{i}_trigger", default=slot_trigger): selector.SelectSelector(
                 selector.SelectSelectorConfig(
                     options=[
@@ -1135,15 +1170,6 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
                 )
             ),
             vol.Optional(
-                f"isolation_rule_{i}_entities", default=slot_entities
-            ): selector.SelectSelector(
-                selector.SelectSelectorConfig(
-                    options=member_options,  # type: ignore[typeddict-item]
-                    multiple=True,
-                    mode=selector.SelectSelectorMode.DROPDOWN,
-                )
-            ),
-            vol.Optional(
                 f"isolation_rule_{i}_activate_delay", default=slot_activate_delay
             ): selector.NumberSelector(
                 selector.NumberSelectorConfig(
@@ -1157,6 +1183,34 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
                 selector.NumberSelectorConfig(
                     min=0, max=300, step=1, unit_of_measurement="s",
                     mode=selector.NumberSelectorMode.SLIDER,
+                )
+            ),
+            vol.Required(
+                f"isolation_rule_{i}_action_type", default=slot_action_type
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=[IsolationActionType.HVAC_MODE.value, IsolationActionType.PRESET_MODE.value],
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                    translation_key="isolation_action_type",
+                )
+            ),
+            vol.Required(
+                f"isolation_rule_{i}_action_hvac_mode", default=slot_action_hvac_mode
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=hvac_mode_options,
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                    translation_key="isolation_action_hvac_mode",
+                )
+            ),
+            vol.Optional(
+                f"isolation_rule_{i}_action_preset_mode",
+                description={"suggested_value": slot_action_preset_mode},
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=preset_options,
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                    translation_key="isolation_action_preset_mode",
                 )
             ),
         }
@@ -1184,6 +1238,16 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
                         available_hvac_modes.append(mode)
         hvac_mode_options = available_hvac_modes if available_hvac_modes else [m.value for m in HVACMode]
 
+        available_presets: list[str] = []
+        seen_presets: set[str] = set()
+        for entity_id in members:
+            if state := self.hass.states.get(entity_id):
+                for mode in state.attributes.get(ATTR_PRESET_MODES, []):
+                    if mode not in seen_presets:
+                        seen_presets.add(mode)
+                        available_presets.append(mode)
+        preset_options = available_presets
+
         saved_rules: list[dict[str, Any]] = config.get(CONF_ISOLATION_RULES, [])
         saved_count = config.get(CONF_ISOLATION_RULES_COUNT, str(max(len(saved_rules), 1)))
         rule_count = max(int(saved_count), max(len(saved_rules), 1))
@@ -1194,7 +1258,7 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
         collapsed = not config.get(CONF_EXPAND_SECTIONS)
 
         # Rule 1 is embedded directly in the isolation_section
-        rule_1_fields = self._isolation_rule_schema(1, slots[0], members, seen, hvac_mode_options, member_options)
+        rule_1_fields = self._isolation_rule_schema(1, slots[0], members, seen, hvac_mode_options, member_options, preset_options)
         isolation_section_fields: dict[Any, Any] = {
             vol.Required(CONF_ISOLATION_RULES_COUNT, default=str(rule_count)): selector.SelectSelector(
                 selector.SelectSelectorConfig(
@@ -1217,7 +1281,7 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
         for i, slot in enumerate(slots[1:], start=2):
             result[vol.Required(f"isolation_rule_{i}_section")] = section(  # type: ignore[index]
                 vol.Schema(
-                    self._isolation_rule_schema(i, slot, members, seen, hvac_mode_options, member_options)
+                    self._isolation_rule_schema(i, slot, members, seen, hvac_mode_options, member_options, preset_options)
                 ),
                 {"collapsed": collapsed},
             )
@@ -1424,7 +1488,7 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
                     continue
                 slot_entities = set(flattened_input.get(f"isolation_rule_{i}_entities", []))
                 if slot_entities and slot_entities >= entities:
-                    isolation_error = f"isolation_rule_{i}_section"
+                    isolation_error = f"isolation_rule_{i}_section" if i > 1 else "isolation_section"
                     break
             if isolation_error:
                 return await self._show_main_form(
@@ -1433,6 +1497,22 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
                         isolation_error: "isolation_all_selected",
                     },
                 )
+
+            # Validate: if action_type is preset_mode, action_preset_mode must be configured
+            for i in range(1, 5):
+                slot_trigger = flattened_input.get(f"isolation_rule_{i}_trigger", IsolationTrigger.DISABLED)
+                if slot_trigger == IsolationTrigger.DISABLED:
+                    continue
+                action_type = flattened_input.get(f"isolation_rule_{i}_action_type", IsolationActionType.HVAC_MODE.value)
+                if action_type == IsolationActionType.PRESET_MODE.value:
+                    if not flattened_input.get(f"isolation_rule_{i}_action_preset_mode"):
+                        section_key = f"isolation_rule_{i}_section" if i > 1 else "isolation_section"
+                        return await self._show_main_form(
+                            current_config,
+                            form_errors={
+                                section_key: "isolation_action_preset_required"
+                            },
+                        )
 
             # Validate: no entity may appear in more than one isolation rule
             seen_isolation_entities: set[str] = set()

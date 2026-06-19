@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1 - 2026-06-19
+
+### ✨ Improvements
+
+*   **Member Isolation — Configurable Isolation Action**: Each isolation rule can now send a custom command when a member is isolated — either a specific HVAC mode (default: `off`) or a preset mode. Useful for devices that require a defined standby state instead of a true off.
+
 ## 1.4.0 - 2026-06-16
 
 ### 🌟 New Features

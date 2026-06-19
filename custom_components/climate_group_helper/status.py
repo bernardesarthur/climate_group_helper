@@ -63,10 +63,6 @@ def build_extra_state_attributes(group: ClimateGroupHelper) -> dict[str, Any]:
     attrs[ATTR_CURRENT_HVAC_MODES] = group._current_hvac_modes
     attrs[ATTR_GROUP_OFFSET] = run_state.group_offset
 
-    # Add the number entity ID for the offset control
-    # We can derive it or find it. Deriving is safer here if we follow HA naming.
-    # Alternatively, we could store a reference to the number entity in the group.
-    # For now, we'll provide the unique_id based one or the group can provide it.
     if group.advanced_mode and group.offset_entity_id:
         attrs[ATTR_OFFSET_ENTITY_ID] = group.offset_entity_id
 

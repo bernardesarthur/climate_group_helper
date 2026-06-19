@@ -17,8 +17,12 @@ from .const import (
     CONF_ISOLATION_SENSOR,
     CONF_ISOLATION_TRIGGER,
     CONF_ISOLATION_TRIGGER_HVAC_MODES,
+    CONF_ISOLATION_ACTION_TYPE,
+    CONF_ISOLATION_ACTION_HVAC_MODE,
+    CONF_ISOLATION_ACTION_PRESET_MODE,
     MODE_MODES_MAP,
     IsolationTrigger,
+    IsolationActionType,
 )
 from .service_call import BaseServiceCallHandler
 
@@ -69,6 +73,12 @@ class MemberIsolationHandler:
         self._isolation_entity_ids: list[str] = rule.get(CONF_ISOLATION_ENTITIES, [])
         self._activate_delay: float = rule.get(CONF_ISOLATION_ACTIVATE_DELAY, 0)
         self._restore_delay: float = rule.get(CONF_ISOLATION_RESTORE_DELAY, 0)
+
+        self._action_type: IsolationActionType = IsolationActionType(
+            rule.get(CONF_ISOLATION_ACTION_TYPE, IsolationActionType.HVAC_MODE)
+        )
+        self._action_hvac_mode: str = rule.get(CONF_ISOLATION_ACTION_HVAC_MODE, HVACMode.OFF)
+        self._action_preset_mode: str | None = rule.get(CONF_ISOLATION_ACTION_PRESET_MODE)
 
         self._unsub_listener: Callable[[], None] | None = None
         self._pending_timer: Callable[[], None] | None = None
@@ -198,8 +208,41 @@ class MemberIsolationHandler:
             self._pending_timer = None
             _LOGGER.debug("[%s] Isolation timer cancelled", self._group.entity_id)
 
+    def _build_isolation_payload(self, entity_id: str) -> dict | None:
+        """Return the service call payload for the isolation pre-action.
+
+        Returns None if the device is unavailable or already in the target state.
+        """
+        state = self._group.read_member_state(entity_id)
+        if not state or state.state in (STATE_UNAVAILABLE, STATE_UNKNOWN):
+            return None
+
+        if self._action_type == IsolationActionType.PRESET_MODE:
+            preset = self._action_preset_mode
+            if not preset:
+                _LOGGER.warning(
+                    "[%s] isolation_action_type=preset_mode but no preset configured for %s — falling back to OFF",
+                    self._group.entity_id, entity_id,
+                )
+                return {"hvac_mode": HVACMode.OFF}
+            supported = state.attributes.get("preset_modes", [])
+            if preset not in supported:
+                _LOGGER.warning(
+                    "[%s] Isolation preset %r not supported by %s (supported: %s) — falling back to OFF",
+                    self._group.entity_id, preset, entity_id, supported,
+                )
+                return {"hvac_mode": HVACMode.OFF}
+            if state.attributes.get("preset_mode") == preset:
+                return None  # already set
+            return {"preset_mode": preset}
+
+        # Default: hvac_mode
+        if state.state == self._action_hvac_mode:
+            return None  # already in target mode
+        return {"hvac_mode": self._action_hvac_mode}
+
     async def _activate_isolation(self) -> None:
-        """Add entities to isolated_members and turn them OFF."""
+        """Add entities to isolated_members and trigger pre-action."""
         new_isolated = self._group.run_state.isolated_members | frozenset(self._isolation_entity_ids)
         self._group.run_state = replace(
             self._group.run_state,
@@ -209,9 +252,9 @@ class MemberIsolationHandler:
 
         for entity_id in self._isolation_entity_ids:
             if handler := self._call_handlers.get(entity_id):
-                member_state = self._hass.states.get(entity_id)
-                if member_state and member_state.state != HVACMode.OFF:
-                    await handler.call_immediate({"hvac_mode": HVACMode.OFF})
+                payload = self._build_isolation_payload(entity_id)
+                if payload:
+                    await handler.call_immediate(payload)
 
         self._group.async_defer_or_update_ha_state()
 

@@ -35,6 +35,7 @@ from .const import (
     CONF_IGNORE_OFF_MEMBERS_SCHEDULE,
     CONF_UNION_OUT_OF_BOUNDS_ACTION,
     CONF_UNION_UNSUPPORTED_HVAC_ACTION,
+    FLOAT_TOLERANCE,
     FeatureStrategy,
     SyncMode,
     UnionOutOfBoundsAction,
@@ -239,7 +240,7 @@ class BaseServiceCallHandler(ABC):
         - Handles temperature range specially (must be sent in one call)
         - Uses _get_call_entity_ids() for entity selection
         - Routes calls through the processing pipeline:
-          _build_initial_call → _process_min_temp_off → _process_member_offset → _process_group_offset → _process_oob_guard
+          _build_initial_call → _process_unsupported_hvac → _process_min_temp_off → _process_member_offset → _process_group_offset → _process_range_template → _process_oob_guard
 
         Args:
             data: Dict of attribute values to sync
@@ -248,7 +249,7 @@ class BaseServiceCallHandler(ABC):
         """
         calls = []
         temp_range_processed = False
-        data = data or self.target_state.to_dict()
+        data = self.target_state.to_dict() if data is None else data
         filter_attrs = (filter_state or FilterState()).to_dict()
 
         for attr, value in data.items():
@@ -289,7 +290,7 @@ class BaseServiceCallHandler(ABC):
             if not entity_ids and attr != ATTR_HVAC_MODE:
                 continue
 
-            # Pipeline: build → process unsupported hvac → process min_temp_off → process offsets → process OOB guard
+            # Pipeline: build → unsupported_hvac → min_temp_off → member_offset → group_offset → range_template → oob_guard
             raw = self._build_initial_call(attr, value, entity_ids)
             processed = self._process_unsupported_hvac(raw)
             processed = self._process_min_temp_off(processed)
@@ -783,6 +784,13 @@ class BaseServiceCallHandler(ABC):
                 target_temp = float(self._group._attr_target_temperature)
                 low_val = target_temp - 5
                 high_val = target_temp + 5
+                # Deliberate exception to the StateManager pattern (AGENTS.md §1): this is
+                # pipeline-internal band seeding, not a source-attributable event — there is
+                # no meaningful "last_source" for it, so it bypasses StateManager.update()
+                # and writes target_temp_low/high directly without touching last_source/
+                # last_entity/last_timestamp (those keep reflecting the actual command that
+                # triggered this call). Idempotent: template.low/high are cached immediately
+                # below, so a retry of this same call sees a populated cache and skips seeding.
                 self._group.shared_target_state = self._group.shared_target_state.update(
                     target_temp_low=low_val,
                     target_temp_high=high_val,
@@ -1082,11 +1090,17 @@ class ClimateCallHandler(BaseServiceCallHandler):
         """
         target = self.target_state.to_dict()
         skip_attrs = set(call.get("injected", [])) | set(call.get("member_offset_applied", []))
+        _float_attrs = {"temperature", "humidity", "target_temp_low", "target_temp_high"}
         for attr, value in call["kwargs"].items():
             if attr in skip_attrs:
                 continue
-            if attr in target and target[attr] is not None and target[attr] != value:
-                return True
+            if attr in target and target[attr] is not None:
+                t = target[attr]
+                if attr in _float_attrs and isinstance(t, (int, float)) and isinstance(value, (int, float)):
+                    if abs(t - value) > FLOAT_TOLERANCE:
+                        return True
+                elif t != value:
+                    return True
         return False
 
     def _block_call_attr(self, data: dict[str, Any], attr: str) -> bool:

@@ -81,7 +81,13 @@ class SyncModeHandler:
     def sync_mode(self) -> SyncMode:
         """Return the effective sync mode (respecting schedule overrides)."""
         if META_KEY_SYNC_MODE in self._group.run_state.config_overrides:
-            return SyncMode(self._group.run_state.config_overrides[META_KEY_SYNC_MODE])
+            try:
+                return SyncMode(self._group.run_state.config_overrides[META_KEY_SYNC_MODE])
+            except ValueError:
+                _LOGGER.warning(
+                    "[%s] Invalid sync_mode meta-key value '%s', falling back to configured mode",
+                    self._group.entity_id, self._group.run_state.config_overrides[META_KEY_SYNC_MODE],
+                )
         return self._sync_mode
 
     @property
@@ -113,7 +119,21 @@ class SyncModeHandler:
         self._active_sync_tasks.clear()
 
     def resync(self) -> None:
-        """Handle changes based on sync mode."""
+        """Process a member state_changed event and enforce the configured sync mode.
+
+        Call order:
+        1. Startup block — reject all events during the first STARTUP_BLOCK_DELAY seconds.
+        2. Transient guard — drop unavailable/unknown new_state events entirely.
+        3. MEMBER_OFF isolation — always runs, even when sync_mode is DISABLED.
+        4. Blocking-source enforcement — active override managers re-enforce their state.
+        5. Echo detection — own echoes are filtered or selectively adopted (side-effect
+           adoption for attributes we changed as a side effect of another command).
+        6. Sync-mode logic — MIRROR adopts, LOCK reverts, MASTER_LOCK does both.
+        7. Enforcement — call_debounced() pushes target_state to out-of-sync members.
+
+        Range-Template-covered members are excluded from all adoption paths (steps 6);
+        their changeover is driven independently by TemplateCallHandler.
+        """
 
         # Block during startup to prevent initial state flood from overwriting target_state.
         if (
@@ -229,10 +249,12 @@ class SyncModeHandler:
         # 3. Master/Lock mode: master adopts (MIRROR), non-master reverts (LOCK)
         if self.sync_mode == SyncMode.MASTER_LOCK:
             if self._group.run_state.master_fallback_active:
+                # Master is unavailable — without a reference state there is nothing to enforce.
+                # Non-masters are intentionally left free until the master returns.
                 _LOGGER.debug("[%s] MASTER_LOCK enforcement skipped (master fallback active)", self._group.entity_id)
                 return
             master_id = self._group._master_entity_id
-            if master_id and change_entity_id == master_id and not is_covered:
+            if master_id and change_entity_id == master_id and not is_covered and not is_reconnect:
                 if filtered := {key: value for key, value in change_dict.items() if self.filter_state.to_dict().get(key)}:
                     filtered = self._reverse_offset_temperatures(change_entity_id, filtered)
                     self.state_manager.update(entity_id=change_entity_id, **filtered)

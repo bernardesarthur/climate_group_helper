@@ -272,7 +272,9 @@ Apply permanent individual offsets (±20°C) to each group member to account for
 
 ### Member Isolation
 
-Temporarily isolate specific members from the group using sensors or state triggers. While isolation is active, these devices are turned `off` and excluded from all averaging and synchronization calculations. Window Control and the Main Switch always take priority over Member Isolation. At least one member must always remain active to ensure the group stays operational.
+Temporarily isolate specific members from the group using sensors or state triggers. While isolation is active, these devices are excluded from all group calculations and synchronization — as if they were not members of the group. At least one member must always remain active to ensure the group stays operational.
+
+You can define **up to 4 independent isolation rules** per group, each with its own trigger, member list, delays, and isolation action — useful for rooms with mixed device types. For example, a room with both a radiator (heat-only) and an AC (heat/cool) can use one rule to isolate the AC when the group switches to `heat`, and a second rule to isolate the radiator when it switches to `cool`. Each rule's **isolation action** controls what command is sent to the member when isolation activates — either an HVAC mode (default: `off`) or a preset mode for devices that require a specific standby state.
 
 You can define **up to 4 independent isolation rules** per group, each with its own trigger, member list, and delays — useful for rooms with mixed device types. For example, a room with both a radiator (heat-only) and an AC (heat/cool) can use one rule to isolate the AC when the group switches to `heat`, and a second rule to isolate the radiator when it switches to `cool`.
 
@@ -280,6 +282,7 @@ You can define **up to 4 independent isolation rules** per group, each with its 
 *   **HVAC Mode:** Isolation activates when the group's target mode matches a configured set (e.g. isolate radiators when switching to `cool`).
 *   **Member Off:** Automatically isolates individual members when they are turned `off` manually. Restoration occurs as soon as the device is turned back `on`.
 *   **Configurable Delays:** Set custom reaction times for activation and restoration (Sensor and HVAC Mode triggers only).
+*   **Isolation Action:** Choose what command to send when a member is isolated. Default is `hvac_mode: off`. For devices without a real off mode (e.g. KNX floor heating), use `preset_mode` to set a safe standby preset (e.g. `building_protection`) instead.
 
 ### Member Template
 
@@ -427,13 +430,16 @@ A dedicated `number` entity allows you to apply a global temperature shift (±5.
 
 | Option | Description |
 |--------|-------------|
-| **Number of Rules** | How many independent isolation rules to configure (1–4). Each rule has its own trigger, members, and delays. Save after changing to reveal or hide additional rule sections. |
+| **Number of Rules** | How many independent isolation rules to configure (1–4). Each rule has its own trigger, members, delays, and action. Save after changing to reveal or hide additional rule sections. |
+| **Entities to Isolate** | Which group members this rule isolates. |
 | **Trigger Type** | **Binary Sensor** (activates when sensor is ON), **HVAC Mode** (activates when group mode matches), or **Member Off** (isolates each member individually when it turns off manually). |
 | **Isolation Sensor** | *(Sensor trigger)* Binary sensor that triggers isolation when active. |
 | **HVAC Mode Trigger** | *(HVAC Mode trigger)* The group modes that activate isolation. |
-| **Isolated Members** | Which group members to isolate. For Member Off, defaults to all members. |
 | **Activate Delay** | Time to wait after the trigger activates before isolating members. |
 | **Restore Delay** | Time to wait after the trigger deactivates before restoring members. |
+| **Isolation Action** | What to send to the member when isolation activates: **Set HVAC mode** (default: `off`) or **Set preset mode** (e.g. `building_protection` for floor heating without a real off mode). |
+| **HVAC Mode** | *(HVAC mode action)* The HVAC mode to set on the isolated member (default: `off`). |
+| **Preset Mode** | *(Preset mode action)* The preset to set on the isolated member. Falls back to `hvac_mode: off` if the preset is not supported by the device. |
 
 ### Member Template
 

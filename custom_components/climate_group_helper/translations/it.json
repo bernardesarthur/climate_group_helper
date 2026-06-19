@@ -202,81 +202,105 @@
             "description": "Isola temporaneamente membri specifici (es: radiatori dietro tende) quando un sensore binario è attivo.",
             "data": {
               "isolation_rule_count": "Numero di regole",
+              "isolation_rule_1_entities": "Entità da isolare",
               "isolation_rule_1_trigger": "Tipo di trigger",
               "isolation_rule_1_sensor": "Sensore di isolamento",
               "isolation_rule_1_hvac_modes": "Trigger modalità HVAC",
-              "isolation_rule_1_entities": "Entità da isolare",
               "isolation_rule_1_activate_delay": "Ritardo di attivazione (secondi)",
-              "isolation_rule_1_restore_delay": "Ritardo di ripristino (secondi)"
+              "isolation_rule_1_restore_delay": "Ritardo di ripristino (secondi)",
+              "isolation_rule_1_action_type": "Azione di isolamento",
+              "isolation_rule_1_action_hvac_mode": "Modalità HVAC",
+              "isolation_rule_1_action_preset_mode": "Modalità predefinita"
             },
             "data_description": {
               "isolation_rule_count": "Quante regole di isolamento indipendenti mostrare. Salvare dopo la modifica per mostrare o nascondere slot aggiuntivi.",
+              "isolation_rule_1_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_1_trigger": "Scegliere cosa attiva l'isolamento: un sensore binario o una modalità HVAC specifica del gruppo.",
               "isolation_rule_1_sensor": "(Trigger sensore) Sensore binario che attiva l'isolamento quando è ON.",
               "isolation_rule_1_hvac_modes": "(Trigger modalità HVAC) L'isolamento si attiva quando la modalità target del gruppo è una di queste.",
-              "isolation_rule_1_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_1_activate_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo l'attivazione del trigger prima di isolare i membri.",
-              "isolation_rule_1_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo."
+              "isolation_rule_1_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo.",
+              "isolation_rule_1_action_type": "Scegli cosa fare durante l'isolamento: impostare una modalità HVAC o una modalità predefinita.",
+              "isolation_rule_1_action_hvac_mode": "Modalità HVAC da applicare al membro isolato.",
+              "isolation_rule_1_action_preset_mode": "Modalità predefinita da applicare al membro isolato."
             }
           },
           "isolation_rule_2_section": {
             "name": "Isolamento membro – Regola 2",
             "description": "Seconda regola di isolamento opzionale con trigger e lista membri indipendenti.",
             "data": {
+              "isolation_rule_2_entities": "Entità da isolare",
               "isolation_rule_2_trigger": "Tipo di trigger",
               "isolation_rule_2_sensor": "Sensore di isolamento",
               "isolation_rule_2_hvac_modes": "Trigger modalità HVAC",
-              "isolation_rule_2_entities": "Entità da isolare",
               "isolation_rule_2_activate_delay": "Ritardo di attivazione (secondi)",
-              "isolation_rule_2_restore_delay": "Ritardo di ripristino (secondi)"
+              "isolation_rule_2_restore_delay": "Ritardo di ripristino (secondi)",
+              "isolation_rule_2_action_type": "Azione di isolamento",
+              "isolation_rule_2_action_hvac_mode": "Modalità HVAC",
+              "isolation_rule_2_action_preset_mode": "Modalità predefinita"
             },
             "data_description": {
+              "isolation_rule_2_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_2_trigger": "Scegliere cosa attiva l'isolamento: un sensore binario o una modalità HVAC specifica del gruppo.",
               "isolation_rule_2_sensor": "(Trigger sensore) Sensore binario che attiva l'isolamento quando è ON.",
               "isolation_rule_2_hvac_modes": "(Trigger modalità HVAC) L'isolamento si attiva quando la modalità target del gruppo è una di queste.",
-              "isolation_rule_2_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_2_activate_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo l'attivazione del trigger prima di isolare i membri.",
-              "isolation_rule_2_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo."
+              "isolation_rule_2_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo.",
+              "isolation_rule_2_action_type": "Scegli cosa fare durante l'isolamento: impostare una modalità HVAC o una modalità predefinita.",
+              "isolation_rule_2_action_hvac_mode": "Modalità HVAC da applicare al membro isolato.",
+              "isolation_rule_2_action_preset_mode": "Modalità predefinita da applicare al membro isolato."
             }
           },
           "isolation_rule_3_section": {
             "name": "Isolamento membro – Regola 3",
             "description": "Terza regola di isolamento opzionale con trigger e lista membri indipendenti.",
             "data": {
+              "isolation_rule_3_entities": "Entità da isolare",
               "isolation_rule_3_trigger": "Tipo di trigger",
               "isolation_rule_3_sensor": "Sensore di isolamento",
               "isolation_rule_3_hvac_modes": "Trigger modalità HVAC",
-              "isolation_rule_3_entities": "Entità da isolare",
               "isolation_rule_3_activate_delay": "Ritardo di attivazione (secondi)",
-              "isolation_rule_3_restore_delay": "Ritardo di ripristino (secondi)"
+              "isolation_rule_3_restore_delay": "Ritardo di ripristino (secondi)",
+              "isolation_rule_3_action_type": "Azione di isolamento",
+              "isolation_rule_3_action_hvac_mode": "Modalità HVAC",
+              "isolation_rule_3_action_preset_mode": "Modalità predefinita"
             },
             "data_description": {
+              "isolation_rule_3_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_3_trigger": "Scegliere cosa attiva l'isolamento: un sensore binario o una modalità HVAC specifica del gruppo.",
               "isolation_rule_3_sensor": "(Trigger sensore) Sensore binario che attiva l'isolamento quando è ON.",
               "isolation_rule_3_hvac_modes": "(Trigger modalità HVAC) L'isolamento si attiva quando la modalità target del gruppo è una di queste.",
-              "isolation_rule_3_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_3_activate_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo l'attivazione del trigger prima di isolare i membri.",
-              "isolation_rule_3_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo."
+              "isolation_rule_3_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo.",
+              "isolation_rule_3_action_type": "Scegli cosa fare durante l'isolamento: impostare una modalità HVAC o una modalità predefinita.",
+              "isolation_rule_3_action_hvac_mode": "Modalità HVAC da applicare al membro isolato.",
+              "isolation_rule_3_action_preset_mode": "Modalità predefinita da applicare al membro isolato."
             }
           },
           "isolation_rule_4_section": {
             "name": "Isolamento membro – Regola 4",
             "description": "Quarta regola di isolamento opzionale con trigger e lista membri indipendenti.",
             "data": {
+              "isolation_rule_4_entities": "Entità da isolare",
               "isolation_rule_4_trigger": "Tipo di trigger",
               "isolation_rule_4_sensor": "Sensore di isolamento",
               "isolation_rule_4_hvac_modes": "Trigger modalità HVAC",
-              "isolation_rule_4_entities": "Entità da isolare",
               "isolation_rule_4_activate_delay": "Ritardo di attivazione (secondi)",
-              "isolation_rule_4_restore_delay": "Ritardo di ripristino (secondi)"
+              "isolation_rule_4_restore_delay": "Ritardo di ripristino (secondi)",
+              "isolation_rule_4_action_type": "Azione di isolamento",
+              "isolation_rule_4_action_hvac_mode": "Modalità HVAC",
+              "isolation_rule_4_action_preset_mode": "Modalità predefinita"
             },
             "data_description": {
+              "isolation_rule_4_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_4_trigger": "Scegliere cosa attiva l'isolamento: un sensore binario o una modalità HVAC specifica del gruppo.",
               "isolation_rule_4_sensor": "(Trigger sensore) Sensore binario che attiva l'isolamento quando è ON.",
               "isolation_rule_4_hvac_modes": "(Trigger modalità HVAC) L'isolamento si attiva quando la modalità target del gruppo è una di queste.",
-              "isolation_rule_4_entities": "Membri del gruppo da isolare quando il trigger è attivo.",
               "isolation_rule_4_activate_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo l'attivazione del trigger prima di isolare i membri.",
-              "isolation_rule_4_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo."
+              "isolation_rule_4_restore_delay": "(Solo trigger sensore/modalità HVAC) Tempo di attesa dopo la disattivazione del trigger prima di ripristinare i membri allo stato target del gruppo.",
+              "isolation_rule_4_action_type": "Scegli cosa fare durante l'isolamento: impostare una modalità HVAC o una modalità predefinita.",
+              "isolation_rule_4_action_hvac_mode": "Modalità HVAC da applicare al membro isolato.",
+              "isolation_rule_4_action_preset_mode": "Modalità predefinita da applicare al membro isolato."
             }
           },
           "member_template_section": {
@@ -331,6 +355,7 @@
       "master_options_notice": "Nuova opzione entità Master",
       "isolation_all_selected": "Almeno un membro deve rimanere fuori dall'isolamento.",
       "isolation_entity_overlap": "Ogni membro può comparire solo in una regola di isolamento.",
+      "isolation_action_preset_required": "Seleziona una modalità predefinita per l'azione di isolamento.",
       "sensor_loop_protection": "Non è possibile utilizzare un sensore Climate Group Helper come sensore esterno — ciò creerebbe un loop di retroazione."
     },
     "abort": {
@@ -471,6 +496,12 @@
         "sensor": "Sensore binario – Isola quando il sensore è ATTIVO",
         "hvac_mode": "Modalità HVAC – Isola quando la modalità del gruppo corrisponde",
         "member_off": "Membro spento – Isola quando un membro si spegne manualmente"
+      }
+    },
+    "isolation_action_type": {
+      "options": {
+        "hvac_mode": "Imposta modalità HVAC",
+        "preset_mode": "Imposta modalità predefinita"
       }
     },
     "presence_mode": {

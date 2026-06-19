@@ -202,81 +202,105 @@
             "description": "Тимчасово ізолюйте певних учасників (напр. радіатори за шторами) коли бінарний датчик активний.",
             "data": {
               "isolation_rule_count": "Кількість правил",
+              "isolation_rule_1_entities": "Сутності для ізоляції",
               "isolation_rule_1_trigger": "Тип тригера",
               "isolation_rule_1_sensor": "Сенсор ізоляції",
               "isolation_rule_1_hvac_modes": "Тригер HVAC-режиму",
-              "isolation_rule_1_entities": "Сутності для ізоляції",
               "isolation_rule_1_activate_delay": "Затримка активації (секунди)",
-              "isolation_rule_1_restore_delay": "Затримка відновлення (секунди)"
+              "isolation_rule_1_restore_delay": "Затримка відновлення (секунди)",
+              "isolation_rule_1_action_type": "Дія ізоляції",
+              "isolation_rule_1_action_hvac_mode": "Режим HVAC",
+              "isolation_rule_1_action_preset_mode": "Заданий режим"
             },
             "data_description": {
               "isolation_rule_count": "Скільки незалежних правил ізоляції відображати. Збережіть після зміни, щоб показати або приховати додаткові слоти правил.",
+              "isolation_rule_1_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_1_trigger": "Виберіть, що активує ізоляцію: бінарний сенсор або конкретний HVAC-режим групи.",
               "isolation_rule_1_sensor": "(Тригер сенсора) Бінарний сенсор, який запускає ізоляцію при стані ON.",
               "isolation_rule_1_hvac_modes": "(Тригер HVAC-режиму) Ізоляція активується, коли цільовий режим групи є одним із зазначених.",
-              "isolation_rule_1_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_1_activate_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після активації тригера перед ізоляцією учасників.",
-              "isolation_rule_1_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи."
+              "isolation_rule_1_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи.",
+              "isolation_rule_1_action_type": "Оберіть, що відбувається при ізоляції: встановити режим HVAC або заданий режим.",
+              "isolation_rule_1_action_hvac_mode": "Режим HVAC, що застосовується до ізольованого учасника.",
+              "isolation_rule_1_action_preset_mode": "Заданий режим, що застосовується до ізольованого учасника."
             }
           },
           "isolation_rule_2_section": {
             "name": "Ізоляція учасника – Правило 2",
             "description": "Необов'язкове друге правило ізоляції з незалежним тригером і списком учасників.",
             "data": {
+              "isolation_rule_2_entities": "Сутності для ізоляції",
               "isolation_rule_2_trigger": "Тип тригера",
               "isolation_rule_2_sensor": "Сенсор ізоляції",
               "isolation_rule_2_hvac_modes": "Тригер HVAC-режиму",
-              "isolation_rule_2_entities": "Сутності для ізоляції",
               "isolation_rule_2_activate_delay": "Затримка активації (секунди)",
-              "isolation_rule_2_restore_delay": "Затримка відновлення (секунди)"
+              "isolation_rule_2_restore_delay": "Затримка відновлення (секунди)",
+              "isolation_rule_2_action_type": "Дія ізоляції",
+              "isolation_rule_2_action_hvac_mode": "Режим HVAC",
+              "isolation_rule_2_action_preset_mode": "Заданий режим"
             },
             "data_description": {
+              "isolation_rule_2_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_2_trigger": "Виберіть, що активує ізоляцію: бінарний сенсор або конкретний HVAC-режим групи.",
               "isolation_rule_2_sensor": "(Тригер сенсора) Бінарний сенсор, який запускає ізоляцію при стані ON.",
               "isolation_rule_2_hvac_modes": "(Тригер HVAC-режиму) Ізоляція активується, коли цільовий режим групи є одним із зазначених.",
-              "isolation_rule_2_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_2_activate_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після активації тригера перед ізоляцією учасників.",
-              "isolation_rule_2_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи."
+              "isolation_rule_2_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи.",
+              "isolation_rule_2_action_type": "Оберіть, що відбувається при ізоляції: встановити режим HVAC або заданий режим.",
+              "isolation_rule_2_action_hvac_mode": "Режим HVAC, що застосовується до ізольованого учасника.",
+              "isolation_rule_2_action_preset_mode": "Заданий режим, що застосовується до ізольованого учасника."
             }
           },
           "isolation_rule_3_section": {
             "name": "Ізоляція учасника – Правило 3",
             "description": "Необов'язкове третє правило ізоляції з незалежним тригером і списком учасників.",
             "data": {
+              "isolation_rule_3_entities": "Сутності для ізоляції",
               "isolation_rule_3_trigger": "Тип тригера",
               "isolation_rule_3_sensor": "Сенсор ізоляції",
               "isolation_rule_3_hvac_modes": "Тригер HVAC-режиму",
-              "isolation_rule_3_entities": "Сутності для ізоляції",
               "isolation_rule_3_activate_delay": "Затримка активації (секунди)",
-              "isolation_rule_3_restore_delay": "Затримка відновлення (секунди)"
+              "isolation_rule_3_restore_delay": "Затримка відновлення (секунди)",
+              "isolation_rule_3_action_type": "Дія ізоляції",
+              "isolation_rule_3_action_hvac_mode": "Режим HVAC",
+              "isolation_rule_3_action_preset_mode": "Заданий режим"
             },
             "data_description": {
+              "isolation_rule_3_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_3_trigger": "Виберіть, що активує ізоляцію: бінарний сенсор або конкретний HVAC-режим групи.",
               "isolation_rule_3_sensor": "(Тригер сенсора) Бінарний сенсор, який запускає ізоляцію при стані ON.",
               "isolation_rule_3_hvac_modes": "(Тригер HVAC-режиму) Ізоляція активується, коли цільовий режим групи є одним із зазначених.",
-              "isolation_rule_3_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_3_activate_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після активації тригера перед ізоляцією учасників.",
-              "isolation_rule_3_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи."
+              "isolation_rule_3_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи.",
+              "isolation_rule_3_action_type": "Оберіть, що відбувається при ізоляції: встановити режим HVAC або заданий режим.",
+              "isolation_rule_3_action_hvac_mode": "Режим HVAC, що застосовується до ізольованого учасника.",
+              "isolation_rule_3_action_preset_mode": "Заданий режим, що застосовується до ізольованого учасника."
             }
           },
           "isolation_rule_4_section": {
             "name": "Ізоляція учасника – Правило 4",
             "description": "Необов'язкове четверте правило ізоляції з незалежним тригером і списком учасників.",
             "data": {
+              "isolation_rule_4_entities": "Сутності для ізоляції",
               "isolation_rule_4_trigger": "Тип тригера",
               "isolation_rule_4_sensor": "Сенсор ізоляції",
               "isolation_rule_4_hvac_modes": "Тригер HVAC-режиму",
-              "isolation_rule_4_entities": "Сутності для ізоляції",
               "isolation_rule_4_activate_delay": "Затримка активації (секунди)",
-              "isolation_rule_4_restore_delay": "Затримка відновлення (секунди)"
+              "isolation_rule_4_restore_delay": "Затримка відновлення (секунди)",
+              "isolation_rule_4_action_type": "Дія ізоляції",
+              "isolation_rule_4_action_hvac_mode": "Режим HVAC",
+              "isolation_rule_4_action_preset_mode": "Заданий режим"
             },
             "data_description": {
+              "isolation_rule_4_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_4_trigger": "Виберіть, що активує ізоляцію: бінарний сенсор або конкретний HVAC-режим групи.",
               "isolation_rule_4_sensor": "(Тригер сенсора) Бінарний сенсор, який запускає ізоляцію при стані ON.",
               "isolation_rule_4_hvac_modes": "(Тригер HVAC-режиму) Ізоляція активується, коли цільовий режим групи є одним із зазначених.",
-              "isolation_rule_4_entities": "Учасники групи, які будуть ізольовані при активному тригері.",
               "isolation_rule_4_activate_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після активації тригера перед ізоляцією учасників.",
-              "isolation_rule_4_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи."
+              "isolation_rule_4_restore_delay": "(Лише тригер сенсора/HVAC-режиму) Час очікування після деактивації тригера перед відновленням учасників до цільового стану групи.",
+              "isolation_rule_4_action_type": "Оберіть, що відбувається при ізоляції: встановити режим HVAC або заданий режим.",
+              "isolation_rule_4_action_hvac_mode": "Режим HVAC, що застосовується до ізольованого учасника.",
+              "isolation_rule_4_action_preset_mode": "Заданий режим, що застосовується до ізольованого учасника."
             }
           },
           "member_template_section": {
@@ -331,6 +355,7 @@
       "master_options_notice": "Новий параметр головної сутності",
       "isolation_all_selected": "Принаймні один учасник повинен залишатися поза ізоляцією.",
       "isolation_entity_overlap": "Кожен учасник може з'являтися лише в одному правилі ізоляції.",
+      "isolation_action_preset_required": "Оберіть заданий режим для дії ізоляції.",
       "sensor_loop_protection": "Неможливо використовувати сенсор Climate Group Helper як зовнішній сенсор — це призведе до зворотного зв'язку."
     },
     "abort": {
@@ -471,6 +496,12 @@
         "sensor": "Бінарний сенсор – Ізолювати, коли сенсор УВІМКНЕНО",
         "hvac_mode": "Режим HVAC – Ізолювати, коли режим групи збігається",
         "member_off": "Учасник вимкнений – Ізолювати, коли учасник вимикається вручну"
+      }
+    },
+    "isolation_action_type": {
+      "options": {
+        "hvac_mode": "Встановити режим HVAC",
+        "preset_mode": "Встановити заданий режим"
       }
     },
     "presence_mode": {

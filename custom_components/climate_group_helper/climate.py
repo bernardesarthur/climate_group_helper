@@ -1010,7 +1010,16 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
 
     @callback
     def async_update_group_state(self) -> None:
-        """Query all members and determine the climate group state."""
+        """Query all members and determine the climate group state.
+
+        Called by HA whenever a member entity changes state.  Responsibilities:
+        - Collect valid member states (excludes isolated and unavailable members).
+        - Set startup_time once all members are ready and trigger startup resync.
+        - Aggregate hvac_mode, hvac_action, temperature/humidity readings.
+        - Apply Range Template to covered members before aggregation.
+        - Update group attributes (min/max/step, supported features, hvac_modes).
+        - Push calibration and temperature update targets if configured.
+        """
 
         # Check if there are any valid states
         self.states, all_members_ready = self._get_valid_member_states(self.climate_entity_ids)
@@ -1019,7 +1028,10 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         if not self.run_state.startup_time and all_members_ready:
             self.run_state = replace(self.run_state, startup_time=time.time())
             if self.advanced_mode:
-                self.hass.async_create_task(self.schedule_handler.schedule_listener(caller=ScheduleCaller.RESYNC))
+                self.hass.async_create_background_task(
+                    self.schedule_handler.schedule_listener(caller=ScheduleCaller.RESYNC),
+                    name="climate_group_startup_resync"
+                )
                 self.calibration_handler.update("temperature", force_sync=True)
                 self.calibration_handler.update("humidity", force_sync=True)
             _LOGGER.debug("[%s] All members ready the first time.", self.entity_id)
@@ -1330,7 +1342,13 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         # Set to the last active HVAC mode if available
         if self.run_state.last_active_hvac_mode is not None:
             _LOGGER.debug("[%s] Turn on with the last active HVAC mode: %s", self.entity_id, self.run_state.last_active_hvac_mode)
-            await self.async_set_hvac_mode(HVACMode(self.run_state.last_active_hvac_mode))
+            try:
+                await self.async_set_hvac_mode(HVACMode(self.run_state.last_active_hvac_mode))
+            except ValueError:
+                _LOGGER.warning(
+                    "[%s] Restored last_active_hvac_mode '%s' is not a valid HVACMode, falling back",
+                    self.entity_id, self.run_state.last_active_hvac_mode,
+                )
 
         # Try to set the first available HVAC mode
         elif self._attr_hvac_modes:

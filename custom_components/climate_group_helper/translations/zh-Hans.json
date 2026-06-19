@@ -202,81 +202,105 @@
             "description": "当二进制传感器激活时，临时隔离特定成员（如窗帘后的暖气片）。隔离的成员将被关闭并从组计算中排除。",
             "data": {
               "isolation_rule_count": "规则数量",
+              "isolation_rule_1_entities": "要隔离的实体",
               "isolation_rule_1_trigger": "触发类型",
               "isolation_rule_1_sensor": "隔离传感器",
               "isolation_rule_1_hvac_modes": "HVAC模式触发",
-              "isolation_rule_1_entities": "要隔离的实体",
               "isolation_rule_1_activate_delay": "激活延迟（秒）",
-              "isolation_rule_1_restore_delay": "恢复延迟（秒）"
+              "isolation_rule_1_restore_delay": "恢复延迟（秒）",
+              "isolation_rule_1_action_type": "隔离动作",
+              "isolation_rule_1_action_hvac_mode": "HVAC 模式",
+              "isolation_rule_1_action_preset_mode": "预设模式"
             },
             "data_description": {
               "isolation_rule_count": "显示多少条独立的隔离规则。更改后保存，以显示或隐藏额外的规则槽。",
+              "isolation_rule_1_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_1_trigger": "选择触发隔离的方式：二进制传感器或群组的特定HVAC模式。",
               "isolation_rule_1_sensor": "（传感器触发）当传感器为ON时触发隔离的二进制传感器。",
               "isolation_rule_1_hvac_modes": "（HVAC模式触发）当群组目标模式为其中之一时，隔离将激活。",
-              "isolation_rule_1_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_1_activate_delay": "（仅限传感器/HVAC模式触发）触发器激活后到隔离成员之前的等待时间。",
-              "isolation_rule_1_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。"
+              "isolation_rule_1_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。",
+              "isolation_rule_1_action_type": "选择隔离时执行的操作：设置 HVAC 模式或预设模式。",
+              "isolation_rule_1_action_hvac_mode": "隔离成员时应用的 HVAC 模式。",
+              "isolation_rule_1_action_preset_mode": "隔离成员时应用的预设模式。"
             }
           },
           "isolation_rule_2_section": {
             "name": "成员隔离 – 规则 2",
             "description": "可选的第二条隔离规则，具有独立的触发器和成员列表。",
             "data": {
+              "isolation_rule_2_entities": "要隔离的实体",
               "isolation_rule_2_trigger": "触发类型",
               "isolation_rule_2_sensor": "隔离传感器",
               "isolation_rule_2_hvac_modes": "HVAC模式触发",
-              "isolation_rule_2_entities": "要隔离的实体",
               "isolation_rule_2_activate_delay": "激活延迟（秒）",
-              "isolation_rule_2_restore_delay": "恢复延迟（秒）"
+              "isolation_rule_2_restore_delay": "恢复延迟（秒）",
+              "isolation_rule_2_action_type": "隔离动作",
+              "isolation_rule_2_action_hvac_mode": "HVAC 模式",
+              "isolation_rule_2_action_preset_mode": "预设模式"
             },
             "data_description": {
+              "isolation_rule_2_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_2_trigger": "选择触发隔离的方式：二进制传感器或群组的特定HVAC模式。",
               "isolation_rule_2_sensor": "（传感器触发）当传感器为ON时触发隔离的二进制传感器。",
               "isolation_rule_2_hvac_modes": "（HVAC模式触发）当群组目标模式为其中之一时，隔离将激活。",
-              "isolation_rule_2_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_2_activate_delay": "（仅限传感器/HVAC模式触发）触发器激活后到隔离成员之前的等待时间。",
-              "isolation_rule_2_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。"
+              "isolation_rule_2_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。",
+              "isolation_rule_2_action_type": "选择隔离时执行的操作：设置 HVAC 模式或预设模式。",
+              "isolation_rule_2_action_hvac_mode": "隔离成员时应用的 HVAC 模式。",
+              "isolation_rule_2_action_preset_mode": "隔离成员时应用的预设模式。"
             }
           },
           "isolation_rule_3_section": {
             "name": "成员隔离 – 规则 3",
             "description": "可选的第三条隔离规则，具有独立的触发器和成员列表。",
             "data": {
+              "isolation_rule_3_entities": "要隔离的实体",
               "isolation_rule_3_trigger": "触发类型",
               "isolation_rule_3_sensor": "隔离传感器",
               "isolation_rule_3_hvac_modes": "HVAC模式触发",
-              "isolation_rule_3_entities": "要隔离的实体",
               "isolation_rule_3_activate_delay": "激活延迟（秒）",
-              "isolation_rule_3_restore_delay": "恢复延迟（秒）"
+              "isolation_rule_3_restore_delay": "恢复延迟（秒）",
+              "isolation_rule_3_action_type": "隔离动作",
+              "isolation_rule_3_action_hvac_mode": "HVAC 模式",
+              "isolation_rule_3_action_preset_mode": "预设模式"
             },
             "data_description": {
+              "isolation_rule_3_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_3_trigger": "选择触发隔离的方式：二进制传感器或群组的特定HVAC模式。",
               "isolation_rule_3_sensor": "（传感器触发）当传感器为ON时触发隔离的二进制传感器。",
               "isolation_rule_3_hvac_modes": "（HVAC模式触发）当群组目标模式为其中之一时，隔离将激活。",
-              "isolation_rule_3_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_3_activate_delay": "（仅限传感器/HVAC模式触发）触发器激活后到隔离成员之前的等待时间。",
-              "isolation_rule_3_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。"
+              "isolation_rule_3_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。",
+              "isolation_rule_3_action_type": "选择隔离时执行的操作：设置 HVAC 模式或预设模式。",
+              "isolation_rule_3_action_hvac_mode": "隔离成员时应用的 HVAC 模式。",
+              "isolation_rule_3_action_preset_mode": "隔离成员时应用的预设模式。"
             }
           },
           "isolation_rule_4_section": {
             "name": "成员隔离 – 规则 4",
             "description": "可选的第四条隔离规则，具有独立的触发器和成员列表。",
             "data": {
+              "isolation_rule_4_entities": "要隔离的实体",
               "isolation_rule_4_trigger": "触发类型",
               "isolation_rule_4_sensor": "隔离传感器",
               "isolation_rule_4_hvac_modes": "HVAC模式触发",
-              "isolation_rule_4_entities": "要隔离的实体",
               "isolation_rule_4_activate_delay": "激活延迟（秒）",
-              "isolation_rule_4_restore_delay": "恢复延迟（秒）"
+              "isolation_rule_4_restore_delay": "恢复延迟（秒）",
+              "isolation_rule_4_action_type": "隔离动作",
+              "isolation_rule_4_action_hvac_mode": "HVAC 模式",
+              "isolation_rule_4_action_preset_mode": "预设模式"
             },
             "data_description": {
+              "isolation_rule_4_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_4_trigger": "选择触发隔离的方式：二进制传感器或群组的特定HVAC模式。",
               "isolation_rule_4_sensor": "（传感器触发）当传感器为ON时触发隔离的二进制传感器。",
               "isolation_rule_4_hvac_modes": "（HVAC模式触发）当群组目标模式为其中之一时，隔离将激活。",
-              "isolation_rule_4_entities": "触发器激活时需要隔离的群组成员。",
               "isolation_rule_4_activate_delay": "（仅限传感器/HVAC模式触发）触发器激活后到隔离成员之前的等待时间。",
-              "isolation_rule_4_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。"
+              "isolation_rule_4_restore_delay": "（仅限传感器/HVAC模式触发）触发器停用后到将成员恢复到群组目标状态之前的等待时间。",
+              "isolation_rule_4_action_type": "选择隔离时执行的操作：设置 HVAC 模式或预设模式。",
+              "isolation_rule_4_action_hvac_mode": "隔离成员时应用的 HVAC 模式。",
+              "isolation_rule_4_action_preset_mode": "隔离成员时应用的预设模式。"
             }
           },
           "member_template_section": {
@@ -331,6 +355,7 @@
       "master_options_notice": "新的主实体选项",
       "isolation_all_selected": "至少一个成员必须保留在隔离之外。",
       "isolation_entity_overlap": "每个成员只能出现在一条隔离规则中。",
+      "isolation_action_preset_required": "请为隔离动作选择一个预设模式。",
       "sensor_loop_protection": "不能将 Climate Group Helper 传感器用作外部传感器——这会产生反馈回路。"
     },
     "abort": {
@@ -471,6 +496,12 @@
         "sensor": "二进制传感器 – 传感器开启时隔离",
         "hvac_mode": "HVAC 模式 – 组模式匹配时隔离",
         "member_off": "成员关闭 – 当成员手动关闭时进行隔离"
+      }
+    },
+    "isolation_action_type": {
+      "options": {
+        "hvac_mode": "设置 HVAC 模式",
+        "preset_mode": "设置预设模式"
       }
     },
     "presence_mode": {

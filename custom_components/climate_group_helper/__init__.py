@@ -211,12 +211,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Migrate old config entries to the current version (Soft Reset to v11).
+    """Migrate old config entries to the current version (Soft Reset to v12).
 
-    Combines all historical transformations (v7–v11) into a single pass:
-        - Combine data+options
-        - Apply all historical transformations
-        - Filter out invalid configuration keys
+    Combines all historical transformations (v7–v12) into a single pass:
+        - Combine data+options (covers pre-v7 entries)
+        - v7→v8: split ignore_off_members into _sync / _schedule variants
+        - v8→v9: rename SyncMode "standard" → "disabled"
+        - v9→v10: rewrite WindowControlMode "off"/"on" → "disabled"/"enabled"
+        - v10→v11: wrap presence_sensor str → list; set advanced_mode=True on existing entries
+        - v11→v12: convert range_template_entities list → CONF_RANGE_TEMPLATE_ENABLED bool;
+                   wrap flat isolation keys into CONF_ISOLATION_RULES list
+        - Filter out invalid/renamed configuration keys via VALID_CONFIG_KEYS whitelist
         - Restore defaults for valid keys not present
     """
     if entry.version < 12:

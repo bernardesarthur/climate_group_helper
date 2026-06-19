@@ -202,81 +202,105 @@
             "description": "Aislar temporalmente miembros específicos (ej: radiadores detrás de cortinas) cuando un sensor binario está activo.",
             "data": {
               "isolation_rule_count": "Número de reglas",
+              "isolation_rule_1_entities": "Entidades a aislar",
               "isolation_rule_1_trigger": "Tipo de activador",
               "isolation_rule_1_sensor": "Sensor de aislamiento",
               "isolation_rule_1_hvac_modes": "Activador de modo HVAC",
-              "isolation_rule_1_entities": "Entidades a aislar",
               "isolation_rule_1_activate_delay": "Retardo de activación (segundos)",
-              "isolation_rule_1_restore_delay": "Retardo de restauración (segundos)"
+              "isolation_rule_1_restore_delay": "Retardo de restauración (segundos)",
+              "isolation_rule_1_action_type": "Acción de aislamiento",
+              "isolation_rule_1_action_hvac_mode": "Modo HVAC",
+              "isolation_rule_1_action_preset_mode": "Modo de ajuste previo"
             },
             "data_description": {
               "isolation_rule_count": "Cuántas reglas de aislamiento independientes mostrar. Guarda tras cambiar para mostrar u ocultar slots adicionales.",
+              "isolation_rule_1_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_1_trigger": "Elige qué activa el aislamiento: un sensor binario o un modo HVAC específico del grupo.",
               "isolation_rule_1_sensor": "(Activador sensor) Sensor binario que activa el aislamiento cuando está ON.",
               "isolation_rule_1_hvac_modes": "(Activador modo HVAC) El aislamiento se activa cuando el modo objetivo del grupo es uno de estos.",
-              "isolation_rule_1_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_1_activate_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la activación del activador antes de aislar miembros.",
-              "isolation_rule_1_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo."
+              "isolation_rule_1_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo.",
+              "isolation_rule_1_action_type": "Elige qué hacer al aislar: establecer un modo HVAC o un modo de ajuste previo.",
+              "isolation_rule_1_action_hvac_mode": "Modo HVAC que se aplicará al miembro aislado.",
+              "isolation_rule_1_action_preset_mode": "Modo de ajuste previo que se aplicará al miembro aislado."
             }
           },
           "isolation_rule_2_section": {
             "name": "Aislamiento de miembro – Regla 2",
             "description": "Segunda regla de aislamiento opcional con activador y lista de miembros independientes.",
             "data": {
+              "isolation_rule_2_entities": "Entidades a aislar",
               "isolation_rule_2_trigger": "Tipo de activador",
               "isolation_rule_2_sensor": "Sensor de aislamiento",
               "isolation_rule_2_hvac_modes": "Activador de modo HVAC",
-              "isolation_rule_2_entities": "Entidades a aislar",
               "isolation_rule_2_activate_delay": "Retardo de activación (segundos)",
-              "isolation_rule_2_restore_delay": "Retardo de restauración (segundos)"
+              "isolation_rule_2_restore_delay": "Retardo de restauración (segundos)",
+              "isolation_rule_2_action_type": "Acción de aislamiento",
+              "isolation_rule_2_action_hvac_mode": "Modo HVAC",
+              "isolation_rule_2_action_preset_mode": "Modo de ajuste previo"
             },
             "data_description": {
+              "isolation_rule_2_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_2_trigger": "Elige qué activa el aislamiento: un sensor binario o un modo HVAC específico del grupo.",
               "isolation_rule_2_sensor": "(Activador sensor) Sensor binario que activa el aislamiento cuando está ON.",
               "isolation_rule_2_hvac_modes": "(Activador modo HVAC) El aislamiento se activa cuando el modo objetivo del grupo es uno de estos.",
-              "isolation_rule_2_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_2_activate_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la activación del activador antes de aislar miembros.",
-              "isolation_rule_2_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo."
+              "isolation_rule_2_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo.",
+              "isolation_rule_2_action_type": "Elige qué hacer al aislar: establecer un modo HVAC o un modo de ajuste previo.",
+              "isolation_rule_2_action_hvac_mode": "Modo HVAC que se aplicará al miembro aislado.",
+              "isolation_rule_2_action_preset_mode": "Modo de ajuste previo que se aplicará al miembro aislado."
             }
           },
           "isolation_rule_3_section": {
             "name": "Aislamiento de miembro – Regla 3",
             "description": "Tercera regla de aislamiento opcional con activador y lista de miembros independientes.",
             "data": {
+              "isolation_rule_3_entities": "Entidades a aislar",
               "isolation_rule_3_trigger": "Tipo de activador",
               "isolation_rule_3_sensor": "Sensor de aislamiento",
               "isolation_rule_3_hvac_modes": "Activador de modo HVAC",
-              "isolation_rule_3_entities": "Entidades a aislar",
               "isolation_rule_3_activate_delay": "Retardo de activación (segundos)",
-              "isolation_rule_3_restore_delay": "Retardo de restauración (segundos)"
+              "isolation_rule_3_restore_delay": "Retardo de restauración (segundos)",
+              "isolation_rule_3_action_type": "Acción de aislamiento",
+              "isolation_rule_3_action_hvac_mode": "Modo HVAC",
+              "isolation_rule_3_action_preset_mode": "Modo de ajuste previo"
             },
             "data_description": {
+              "isolation_rule_3_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_3_trigger": "Elige qué activa el aislamiento: un sensor binario o un modo HVAC específico del grupo.",
               "isolation_rule_3_sensor": "(Activador sensor) Sensor binario que activa el aislamiento cuando está ON.",
               "isolation_rule_3_hvac_modes": "(Activador modo HVAC) El aislamiento se activa cuando el modo objetivo del grupo es uno de estos.",
-              "isolation_rule_3_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_3_activate_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la activación del activador antes de aislar miembros.",
-              "isolation_rule_3_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo."
+              "isolation_rule_3_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo.",
+              "isolation_rule_3_action_type": "Elige qué hacer al aislar: establecer un modo HVAC o un modo de ajuste previo.",
+              "isolation_rule_3_action_hvac_mode": "Modo HVAC que se aplicará al miembro aislado.",
+              "isolation_rule_3_action_preset_mode": "Modo de ajuste previo que se aplicará al miembro aislado."
             }
           },
           "isolation_rule_4_section": {
             "name": "Aislamiento de miembro – Regla 4",
             "description": "Cuarta regla de aislamiento opcional con activador y lista de miembros independientes.",
             "data": {
+              "isolation_rule_4_entities": "Entidades a aislar",
               "isolation_rule_4_trigger": "Tipo de activador",
               "isolation_rule_4_sensor": "Sensor de aislamiento",
               "isolation_rule_4_hvac_modes": "Activador de modo HVAC",
-              "isolation_rule_4_entities": "Entidades a aislar",
               "isolation_rule_4_activate_delay": "Retardo de activación (segundos)",
-              "isolation_rule_4_restore_delay": "Retardo de restauración (segundos)"
+              "isolation_rule_4_restore_delay": "Retardo de restauración (segundos)",
+              "isolation_rule_4_action_type": "Acción de aislamiento",
+              "isolation_rule_4_action_hvac_mode": "Modo HVAC",
+              "isolation_rule_4_action_preset_mode": "Modo de ajuste previo"
             },
             "data_description": {
+              "isolation_rule_4_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_4_trigger": "Elige qué activa el aislamiento: un sensor binario o un modo HVAC específico del grupo.",
               "isolation_rule_4_sensor": "(Activador sensor) Sensor binario que activa el aislamiento cuando está ON.",
               "isolation_rule_4_hvac_modes": "(Activador modo HVAC) El aislamiento se activa cuando el modo objetivo del grupo es uno de estos.",
-              "isolation_rule_4_entities": "Miembros del grupo que se aislarán cuando el activador esté activo.",
               "isolation_rule_4_activate_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la activación del activador antes de aislar miembros.",
-              "isolation_rule_4_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo."
+              "isolation_rule_4_restore_delay": "(Solo activador sensor/modo HVAC) Tiempo de espera tras la desactivación del activador antes de restaurar miembros al estado objetivo del grupo.",
+              "isolation_rule_4_action_type": "Elige qué hacer al aislar: establecer un modo HVAC o un modo de ajuste previo.",
+              "isolation_rule_4_action_hvac_mode": "Modo HVAC que se aplicará al miembro aislado.",
+              "isolation_rule_4_action_preset_mode": "Modo de ajuste previo que se aplicará al miembro aislado."
             }
           },
           "member_template_section": {
@@ -331,6 +355,7 @@
       "master_options_notice": "Nueva opción de entidad Maestra",
       "isolation_all_selected": "Al menos un miembro debe permanecer fuera del aislamiento.",
       "isolation_entity_overlap": "Cada miembro solo puede aparecer en una regla de aislamiento.",
+      "isolation_action_preset_required": "Selecciona un modo de ajuste previo para la acción de aislamiento.",
       "sensor_loop_protection": "No se puede usar un sensor de Climate Group Helper como sensor externo — esto crearía un bucle de retroalimentación."
     },
     "abort": {
@@ -471,6 +496,12 @@
         "sensor": "Sensor binario – Aislar cuando el sensor está ACTIVO",
         "hvac_mode": "Modo HVAC – Aislar cuando el modo del grupo coincide",
         "member_off": "Miembro apagado – Aislar cuando un miembro se apaga manualmente"
+      }
+    },
+    "isolation_action_type": {
+      "options": {
+        "hvac_mode": "Establecer modo HVAC",
+        "preset_mode": "Establecer modo de ajuste previo"
       }
     },
     "presence_mode": {

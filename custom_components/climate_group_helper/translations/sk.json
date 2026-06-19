@@ -202,81 +202,105 @@
             "description": "Dočasne izolujte konkrétnych členov (napr. radiátory za záclonami) keď je binárny senzor aktívny.",
             "data": {
               "isolation_rule_count": "Počet pravidiel",
+              "isolation_rule_1_entities": "Entity na izoláciu",
               "isolation_rule_1_trigger": "Typ spúšťača",
               "isolation_rule_1_sensor": "Izolačný senzor",
               "isolation_rule_1_hvac_modes": "Spúšťač HVAC režimu",
-              "isolation_rule_1_entities": "Entity na izoláciu",
               "isolation_rule_1_activate_delay": "Oneskorenie aktivácie (sekundy)",
-              "isolation_rule_1_restore_delay": "Oneskorenie obnovenia (sekundy)"
+              "isolation_rule_1_restore_delay": "Oneskorenie obnovenia (sekundy)",
+              "isolation_rule_1_action_type": "Izolačná akcia",
+              "isolation_rule_1_action_hvac_mode": "Režim HVAC",
+              "isolation_rule_1_action_preset_mode": "Prednastavený režim"
             },
             "data_description": {
               "isolation_rule_count": "Koľko nezávislých izolačných pravidiel sa zobrazí. Po zmene uložte, aby sa ďalšie sloty pravidiel zobrazili alebo skryli.",
+              "isolation_rule_1_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_1_trigger": "Zvoľte, čo aktivuje izoláciu: binárny senzor alebo konkrétny režim HVAC skupiny.",
               "isolation_rule_1_sensor": "(Spúšťač senzora) Binárny senzor, ktorý spustí izoláciu pri stave ON.",
               "isolation_rule_1_hvac_modes": "(Spúšťač HVAC režimu) Izolácia sa aktivuje, keď je cieľový režim skupiny jedným z týchto.",
-              "isolation_rule_1_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_1_activate_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po aktivácii spúšťača pred izolovaním členov.",
-              "isolation_rule_1_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny."
+              "isolation_rule_1_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny.",
+              "isolation_rule_1_action_type": "Zvoľte, čo sa stane pri izolácii: nastaviť režim HVAC alebo prednastavený režim.",
+              "isolation_rule_1_action_hvac_mode": "Režim HVAC, ktorý sa použije na izolovaného člena.",
+              "isolation_rule_1_action_preset_mode": "Prednastavený režim, ktorý sa použije na izolovaného člena."
             }
           },
           "isolation_rule_2_section": {
             "name": "Izolácia člena – Pravidlo 2",
             "description": "Voliteľné druhé izolačné pravidlo s nezávislým spúšťačom a zoznamom členov.",
             "data": {
+              "isolation_rule_2_entities": "Entity na izoláciu",
               "isolation_rule_2_trigger": "Typ spúšťača",
               "isolation_rule_2_sensor": "Izolačný senzor",
               "isolation_rule_2_hvac_modes": "Spúšťač HVAC režimu",
-              "isolation_rule_2_entities": "Entity na izoláciu",
               "isolation_rule_2_activate_delay": "Oneskorenie aktivácie (sekundy)",
-              "isolation_rule_2_restore_delay": "Oneskorenie obnovenia (sekundy)"
+              "isolation_rule_2_restore_delay": "Oneskorenie obnovenia (sekundy)",
+              "isolation_rule_2_action_type": "Izolačná akcia",
+              "isolation_rule_2_action_hvac_mode": "Režim HVAC",
+              "isolation_rule_2_action_preset_mode": "Prednastavený režim"
             },
             "data_description": {
+              "isolation_rule_2_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_2_trigger": "Zvoľte, čo aktivuje izoláciu: binárny senzor alebo konkrétny režim HVAC skupiny.",
               "isolation_rule_2_sensor": "(Spúšťač senzora) Binárny senzor, ktorý spustí izoláciu pri stave ON.",
               "isolation_rule_2_hvac_modes": "(Spúšťač HVAC režimu) Izolácia sa aktivuje, keď je cieľový režim skupiny jedným z týchto.",
-              "isolation_rule_2_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_2_activate_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po aktivácii spúšťača pred izolovaním členov.",
-              "isolation_rule_2_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny."
+              "isolation_rule_2_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny.",
+              "isolation_rule_2_action_type": "Zvoľte, čo sa stane pri izolácii: nastaviť režim HVAC alebo prednastavený režim.",
+              "isolation_rule_2_action_hvac_mode": "Režim HVAC, ktorý sa použije na izolovaného člena.",
+              "isolation_rule_2_action_preset_mode": "Prednastavený režim, ktorý sa použije na izolovaného člena."
             }
           },
           "isolation_rule_3_section": {
             "name": "Izolácia člena – Pravidlo 3",
             "description": "Voliteľné tretie izolačné pravidlo s nezávislým spúšťačom a zoznamom členov.",
             "data": {
+              "isolation_rule_3_entities": "Entity na izoláciu",
               "isolation_rule_3_trigger": "Typ spúšťača",
               "isolation_rule_3_sensor": "Izolačný senzor",
               "isolation_rule_3_hvac_modes": "Spúšťač HVAC režimu",
-              "isolation_rule_3_entities": "Entity na izoláciu",
               "isolation_rule_3_activate_delay": "Oneskorenie aktivácie (sekundy)",
-              "isolation_rule_3_restore_delay": "Oneskorenie obnovenia (sekundy)"
+              "isolation_rule_3_restore_delay": "Oneskorenie obnovenia (sekundy)",
+              "isolation_rule_3_action_type": "Izolačná akcia",
+              "isolation_rule_3_action_hvac_mode": "Režim HVAC",
+              "isolation_rule_3_action_preset_mode": "Prednastavený režim"
             },
             "data_description": {
+              "isolation_rule_3_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_3_trigger": "Zvoľte, čo aktivuje izoláciu: binárny senzor alebo konkrétny režim HVAC skupiny.",
               "isolation_rule_3_sensor": "(Spúšťač senzora) Binárny senzor, ktorý spustí izoláciu pri stave ON.",
               "isolation_rule_3_hvac_modes": "(Spúšťač HVAC režimu) Izolácia sa aktivuje, keď je cieľový režim skupiny jedným z týchto.",
-              "isolation_rule_3_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_3_activate_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po aktivácii spúšťača pred izolovaním členov.",
-              "isolation_rule_3_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny."
+              "isolation_rule_3_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny.",
+              "isolation_rule_3_action_type": "Zvoľte, čo sa stane pri izolácii: nastaviť režim HVAC alebo prednastavený režim.",
+              "isolation_rule_3_action_hvac_mode": "Režim HVAC, ktorý sa použije na izolovaného člena.",
+              "isolation_rule_3_action_preset_mode": "Prednastavený režim, ktorý sa použije na izolovaného člena."
             }
           },
           "isolation_rule_4_section": {
             "name": "Izolácia člena – Pravidlo 4",
             "description": "Voliteľné štvrté izolačné pravidlo s nezávislým spúšťačom a zoznamom členov.",
             "data": {
+              "isolation_rule_4_entities": "Entity na izoláciu",
               "isolation_rule_4_trigger": "Typ spúšťača",
               "isolation_rule_4_sensor": "Izolačný senzor",
               "isolation_rule_4_hvac_modes": "Spúšťač HVAC režimu",
-              "isolation_rule_4_entities": "Entity na izoláciu",
               "isolation_rule_4_activate_delay": "Oneskorenie aktivácie (sekundy)",
-              "isolation_rule_4_restore_delay": "Oneskorenie obnovenia (sekundy)"
+              "isolation_rule_4_restore_delay": "Oneskorenie obnovenia (sekundy)",
+              "isolation_rule_4_action_type": "Izolačná akcia",
+              "isolation_rule_4_action_hvac_mode": "Režim HVAC",
+              "isolation_rule_4_action_preset_mode": "Prednastavený režim"
             },
             "data_description": {
+              "isolation_rule_4_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_4_trigger": "Zvoľte, čo aktivuje izoláciu: binárny senzor alebo konkrétny režim HVAC skupiny.",
               "isolation_rule_4_sensor": "(Spúšťač senzora) Binárny senzor, ktorý spustí izoláciu pri stave ON.",
               "isolation_rule_4_hvac_modes": "(Spúšťač HVAC režimu) Izolácia sa aktivuje, keď je cieľový režim skupiny jedným z týchto.",
-              "isolation_rule_4_entities": "Členovia skupiny, ktorí budú izolovaní, keď je spúšťač aktívny.",
               "isolation_rule_4_activate_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po aktivácii spúšťača pred izolovaním členov.",
-              "isolation_rule_4_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny."
+              "isolation_rule_4_restore_delay": "(Iba spúšťač senzora/HVAC režimu) Čakacia doba po deaktivácii spúšťača pred obnovením členov do cieľového stavu skupiny.",
+              "isolation_rule_4_action_type": "Zvoľte, čo sa stane pri izolácii: nastaviť režim HVAC alebo prednastavený režim.",
+              "isolation_rule_4_action_hvac_mode": "Režim HVAC, ktorý sa použije na izolovaného člena.",
+              "isolation_rule_4_action_preset_mode": "Prednastavený režim, ktorý sa použije na izolovaného člena."
             }
           },
           "member_template_section": {
@@ -331,6 +355,7 @@
       "master_options_notice": "Nová možnosť Hlavnej entity",
       "isolation_all_selected": "Aspoň jeden člen musí zostať mimo izolácie.",
       "isolation_entity_overlap": "Každý člen sa môže nachádzať iba v jednom izolačnom pravidle.",
+      "isolation_action_preset_required": "Vyberte prednastavený režim pre izolačnú akciu.",
       "sensor_loop_protection": "Senzor Climate Group Helper nie je možné použiť ako externý senzor — spôsobilo by to spätnú väzbu."
     },
     "abort": {
@@ -471,6 +496,12 @@
         "sensor": "Binárny senzor – Izolovať, keď je senzor ZAPNUTÝ",
         "hvac_mode": "Režim HVAC – Izolovať, keď režim skupiny zodpovedá",
         "member_off": "Člen vypnutý – Izolovať, keď sa člen ručne vypne"
+      }
+    },
+    "isolation_action_type": {
+      "options": {
+        "hvac_mode": "Nastaviť režim HVAC",
+        "preset_mode": "Nastaviť prednastavený režim"
       }
     },
     "presence_mode": {

@@ -100,7 +100,13 @@ class BaseOverrideManager:
         return self._group.override_call_handler
 
     def _start_timer(self, duration: float, on_expired: Any) -> None:
-        """Start an override timer. Sets active_override to OVERRIDE_NAME."""
+        """Start an override timer. Sets active_override to OVERRIDE_NAME.
+
+        Cancels any existing timer first (via _cancel_timer, which calls clear_override).
+        on_expired is scheduled as an async task when the timer fires; it must check
+        active_override == OVERRIDE_NAME itself to guard against stale invocations.
+        No-op if duration <= 0.
+        """
         if duration <= 0:
             return
         self._cancel_timer()

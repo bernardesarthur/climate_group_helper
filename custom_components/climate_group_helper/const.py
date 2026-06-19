@@ -102,6 +102,9 @@ CONF_ISOLATION_RULES_COUNT = "isolation_rule_count"
 CONF_ISOLATION_SENSOR = "isolation_sensor"
 CONF_ISOLATION_TRIGGER = "isolation_trigger"
 CONF_ISOLATION_TRIGGER_HVAC_MODES = "isolation_trigger_hvac_modes"
+CONF_ISOLATION_ACTION_TYPE = "isolation_action_type"
+CONF_ISOLATION_ACTION_HVAC_MODE = "isolation_action_hvac_mode"
+CONF_ISOLATION_ACTION_PRESET_MODE = "isolation_action_preset_mode"
 
 # Schedule Automation
 CONF_IGNORE_OFF_MEMBERS_SCHEDULE = "ignore_off_members_schedule"
@@ -247,6 +250,13 @@ class IsolationTrigger(StrEnum):
     SENSOR = "sensor"
     HVAC_MODE = "hvac_mode"
     MEMBER_OFF = "member_off"
+
+
+class IsolationActionType(StrEnum):
+    """Isolation action types."""
+
+    HVAC_MODE = "hvac_mode"
+    PRESET_MODE = "preset_mode"
 
 
 # Service Constants

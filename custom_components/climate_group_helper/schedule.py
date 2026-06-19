@@ -73,8 +73,15 @@ _LOGGER = logging.getLogger(__name__)
 class ScheduleBaseHandler:
     """Shared logic for basis schedule and bypass layers.
 
-    Owns the timer slot, slot processing pipeline (_on_slot_change), and
-    all helpers used by both ScheduleHandler and ScheduleBypassHandler.
+    Owns the single shared timer slot and the slot processing pipeline
+    (_on_slot_change).  The timer slot carries either a resync interval or
+    an override-duration countdown — never both simultaneously.
+
+    Derived classes:
+    - ScheduleHandler: subscribes to the basis schedule/calendar entity and
+      drives the full timer lifecycle (resync + override duration).
+    - ScheduleBypassHandler: subscribes to the bypass entity and calls
+      _on_slot_change() directly; no timer logic of its own.
     """
 
     def __init__(self, group: ClimateGroupHelper) -> None:
@@ -251,7 +258,22 @@ class ScheduleBaseHandler:
         )
 
     async def schedule_listener(self, caller: ScheduleCaller) -> None:
-        """Entry point for all basis-schedule events: apply slot, manage timers."""
+        """Entry point for all basis-schedule events: apply slot, manage timers.
+
+        Caller semantics:
+        - SLOT / SWITCH / RESYNC: apply _on_slot_change(), then (re)start the resync timer.
+        - SERVICE_CALL / SYNC_CALL (MIRROR): skip _on_slot_change(), start override or
+          resync timer depending on override_duration config.
+        - SYNC_CALL (LOCK, last_source != "sync_mode"): early return — no timer touch,
+          no slot apply.  A LOCK revert is not a user-visible change.
+        - BYPASS path: ScheduleBypassHandler calls _on_slot_change(SLOT) directly, never via this method.
+
+        Guards that suppress all action:
+        - No schedule entity configured.
+        - Sticky override active (SLOT caller + user is in control).
+        - External override active (e.g. boost): timer is not touched.
+        - Bypass is currently on: basis timer is suspended.
+        """
         _LOGGER.debug("[%s] Schedule listener triggered by: %s", self._group.entity_id, caller)
 
         if not self._schedule_entity:
@@ -350,6 +372,7 @@ class ScheduleBaseHandler:
             self._group.run_state = replace(self._group.run_state, target_state_snapshot=None)
             self.state_manager.update(**self._snapshot_to_kwargs(snapshot))
             await self.call_handler.call_immediate()
+            self._start_timer("resync")
             _LOGGER.debug("[%s] Bypass deactivated — snapshot restored", self._group.entity_id)
 
         else:

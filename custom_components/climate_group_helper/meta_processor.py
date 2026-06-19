@@ -8,11 +8,15 @@ is forwarded to members:
                            │
                            └── meta-key actions (manager calls, RunState updates)
 
-Supported meta-keys (v1 — State-Keys only):
-    turn_off       : bool      — activates/deactivates the switch override (OFF-all block)
-    sync_mode      : SyncMode  — temporarily shadows the configured sync mode
-    group_offset   : float     — temporarily overrides the group temperature offset
-    sync_attributes: list[str] — temporarily shadows the synchronized attributes
+Supported meta-keys:
+
+    State-Keys (persist in config_overrides until the slot ends):
+        sync_mode      : SyncMode  — temporarily shadows the configured sync mode
+        group_offset   : float     — temporarily overrides the group temperature offset
+        sync_attributes: list[str] — temporarily shadows the synchronized attributes
+
+    One-Shot triggers (applied once per slot activation, not stored in config_overrides):
+        turn_off       : bool      — activates/deactivates the switch override (OFF-all block)
 """
 from __future__ import annotations
 
@@ -98,6 +102,7 @@ class SlotMetaProcessor:
         meta_candidates = {k: v for k, v in combined.items() if k not in ATTR_SERVICE_MAP}
 
         slot_message = meta_candidates.pop("message", None)
+        prev_slot_title = self._group.run_state.active_slot_title
         self._group.run_state = replace(self._group.run_state, active_slot_title=slot_message)
 
         # turn_off is a one-shot trigger, not a stateful key — never enters _active_keys.
@@ -138,7 +143,7 @@ class SlotMetaProcessor:
 
         # Trigger a state update so that changes to config_overrides or other
         # RunState fields are immediately visible in HA attributes.
-        if keys_to_clear or new_meta_keys or slot_message is not None:
+        if keys_to_clear or new_meta_keys or slot_message != prev_slot_title:
             self._group.async_defer_or_update_ha_state()
 
         return MetaProcessResult(

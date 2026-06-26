@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "Немає",
         "off": "Вимкнути",
         "fan_only": "Лише вентилятор"
       }

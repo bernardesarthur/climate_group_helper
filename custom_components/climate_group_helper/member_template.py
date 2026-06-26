@@ -46,6 +46,8 @@ from homeassistant.const import (
 from homeassistant.core import State
 from types import MappingProxyType
 
+from .const import RangeTemplateDeadbandAction
+
 if TYPE_CHECKING:
     from .climate import ClimateGroupHelper
 
@@ -63,7 +65,7 @@ class RangeTemplate:
     """
 
     entity_ids: frozenset[str]
-    deadband_action: str  # "off" | "fan_only"
+    deadband_action: str  # "none" | "off" | "fan_only"
     low: float | None = None
     high: float | None = None
     last_physical_mode: dict[str, str] = field(default_factory=dict)
@@ -86,7 +88,7 @@ class RangeTemplateState:
         real_state: State,
         low: float | None,
         high: float | None,
-        expected_mode: str,
+        expected_mode: str | None,
         expected_temp: float | None,
     ) -> None:
         self._real = real_state
@@ -217,25 +219,21 @@ class MemberTemplateManager:
         high: float,
         current_temp: float | None,
         supported_modes: list[str] | None = None,
-    ) -> tuple[str, float | None]:
+    ) -> tuple[str | None, float | None]:
         """Compute the expected physical (mode, setpoint) for one member."""
         template = self._range_template
-        assert template is not None
+        deadband = None if template.deadband_action == RangeTemplateDeadbandAction.NONE else template.deadband_action
 
         if current_temp is None:
-            mode = template.last_physical_mode.get(entity_id, template.deadband_action)
-            return mode, None
+            return template.last_physical_mode.get(entity_id, deadband), None
 
         if current_temp < low:
             if supported_modes is None or HVACMode.HEAT in supported_modes:
                 return HVACMode.HEAT, low
-            return template.deadband_action, None
         elif current_temp > high:
             if supported_modes is None or HVACMode.COOL in supported_modes:
                 return HVACMode.COOL, high
-            return template.deadband_action, None
-        else:
-            return template.deadband_action, None
+        return deadband, None
 
     # ------------------------------------------------------------------
     # Lifecycle

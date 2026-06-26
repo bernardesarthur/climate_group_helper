@@ -223,6 +223,7 @@ class WindowControlAction(StrEnum):
 class RangeTemplateDeadbandAction(StrEnum):
     """Physical action when a range-template member is inside the deadband."""
 
+    NONE = "none"
     OFF = "off"
     FAN_ONLY = "fan_only"
 

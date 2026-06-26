@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "Keine",
         "off": "Ausschalten",
         "fan_only": "Nur Lüftung"
       }

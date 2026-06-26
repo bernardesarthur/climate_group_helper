@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "Geen",
         "off": "Uitschakelen",
         "fan_only": "Alleen ventilator"
       }

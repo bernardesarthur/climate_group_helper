@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "Nessuna",
         "off": "Spegni",
         "fan_only": "Solo ventilatore"
       }

@@ -336,7 +336,7 @@ class ClimateGroupHelper(GroupEntity, ClimateEntity, RestoreEntity):
         # Range Template (Member Template Pattern)
         deadband_action = None
         if _get_adv(CONF_RANGE_TEMPLATE_ENABLED, False):
-            deadband_action = config.get(CONF_RANGE_TEMPLATE_DEADBAND_ACTION, RangeTemplateDeadbandAction.OFF)
+            deadband_action = config.get(CONF_RANGE_TEMPLATE_DEADBAND_ACTION, RangeTemplateDeadbandAction.NONE)
         self.member_template_manager = MemberTemplateManager(group=self, deadband_action=deadband_action)
 
         self.calibration_handler = CalibrationHandler(self)

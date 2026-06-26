@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "Ingen",
         "off": "Sluk",
         "fan_only": "Kun blæser"
       }

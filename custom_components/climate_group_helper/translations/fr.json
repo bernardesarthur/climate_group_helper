@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "Aucune",
         "off": "Éteindre",
         "fan_only": "Ventilateur uniquement"
       }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2 - 2026-06-26
+
+### ✨ Improvements
+
+*   **Range Template — Deadband Action "None"**: New default option. When the room temperature is within the target band, no command is sent — the device keeps its last mode and regulates itself. `Turn Off` and `Fan Only` remain available for devices that require an explicit command.
+
 ## 1.4.1 - 2026-06-19
 
 ### ✨ Improvements

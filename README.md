@@ -276,8 +276,6 @@ Temporarily isolate specific members from the group using sensors or state trigg
 
 You can define **up to 4 independent isolation rules** per group, each with its own trigger, member list, delays, and isolation action — useful for rooms with mixed device types. For example, a room with both a radiator (heat-only) and an AC (heat/cool) can use one rule to isolate the AC when the group switches to `heat`, and a second rule to isolate the radiator when it switches to `cool`. Each rule's **isolation action** controls what command is sent to the member when isolation activates — either an HVAC mode (default: `off`) or a preset mode for devices that require a specific standby state.
 
-You can define **up to 4 independent isolation rules** per group, each with its own trigger, member list, and delays — useful for rooms with mixed device types. For example, a room with both a radiator (heat-only) and an AC (heat/cool) can use one rule to isolate the AC when the group switches to `heat`, and a second rule to isolate the radiator when it switches to `cool`.
-
 *   **Binary Sensor:** Isolation activates when a binary sensor (e.g. curtain sensor, occupancy helper) turns `on`.
 *   **HVAC Mode:** Isolation activates when the group's target mode matches a configured set (e.g. isolate radiators when switching to `cool`).
 *   **Member Off:** Automatically isolates individual members when they are turned `off` manually. Restoration occurs as soon as the device is turned back `on`.
@@ -296,8 +294,8 @@ Translates outgoing `heat_cool` range commands into single-setpoint commands for
 *   Temperature **above** `target_temp_high` → send `cool` + high setpoint
 *   Temperature **within** the band → send the configured **Deadband Action**
 
-*   **Deadband Action:** What to do when the room is already within the target band: **Turn Off** (default) or **Fan Only**.
-*   **Automatic member detection:** All members that do **not** natively advertise `heat_cool` are automatically covered — no manual selection needed. Members with native `heat_cool` support are left unchanged.
+*   **Deadband Action:** What to do when the room is already within the target band: **None** (default), **Turn Off**, or **Fan Only**.
+*   **Automatic member detection:** All members that do **not** natively advertise `heat_cool` are automatically covered — no manual selection needed. Members with native `heat_cool` support are left unchanged. This also enables `heat_cool` mode for groups consisting entirely of heat-only and cool-only devices, with no native `heat_cool` device required.
 
 ## Management Entities (Switch & Slider)
 
@@ -446,7 +444,7 @@ A dedicated `number` entity allows you to apply a global temperature shift (±5.
 | Option | Description |
 |--------|-------------|
 | **Enable Range Template** | Enables automatic `heat_cool` range control for all members that do not natively advertise `heat_cool`. No manual selection needed — the group detects eligible members automatically. |
-| **Deadband Action** | What to do when the room temperature is already within the target band (between `target_temp_low` and `target_temp_high`). **Turn Off** (default) or **Fan Only**. |
+| **Deadband Action** | What to do when the room temperature is already within the target band (between `target_temp_low` and `target_temp_high`). **None** (default — no command, device regulates itself to the setpoint it already received), **Turn Off**, or **Fan Only**. |
 
 ### Advanced Settings
 

@@ -1321,7 +1321,7 @@ class ClimateGroupHelperOptionsFlow(config_entries.OptionsFlow):
                             CONF_RANGE_TEMPLATE_DEADBAND_ACTION,
                             default=config.get(
                                 CONF_RANGE_TEMPLATE_DEADBAND_ACTION,
-                                RangeTemplateDeadbandAction.OFF,
+                                RangeTemplateDeadbandAction.NONE,
                             ),
                         ): selector.SelectSelector(
                             selector.SelectSelectorConfig(

@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "无",
         "off": "关闭",
         "fan_only": "仅风扇"
       }

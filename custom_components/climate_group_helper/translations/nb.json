@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "Ingen",
         "off": "Slå av",
         "fan_only": "Kun vifte"
       }

@@ -520,6 +520,7 @@
     },
     "range_template_deadband_action": {
       "options": {
+        "none": "None",
         "off": "Turn Off",
         "fan_only": "Fan Only"
       }

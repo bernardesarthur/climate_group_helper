@@ -808,6 +808,9 @@ class BaseServiceCallHandler(ABC):
                 supported_modes = state.attributes.get(ATTR_HVAC_MODES)
                 expected_mode, expected_temp = self._group.member_template_manager.expected_mode_for(eid, low_val, high_val, current_temp, supported_modes)
 
+                if expected_mode is None:
+                    continue
+
                 # Track the active heating/cooling mode for the fallback in
                 # _expected_mode_for() when current_temperature later goes missing.
                 # Deadband is not tracked — it's the neutral state.
